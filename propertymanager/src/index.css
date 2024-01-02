@@ -1,0 +1,36 @@
+body {
+        margin: 0;
+        overscroll-behavior-y: none;
+}
+
+.parent {
+        display: flex;
+        flex-direction: row;
+        width: 100vw;
+        height: 100vh; 
+}
+
+.content-container {
+        flex: 9;
+        display: flex;
+        flex-direction: column;
+}
+
+/* div::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+} */
+
+.accessibility {
+        flex: 1;
+        border-style: solid;
+        border-width: 0;
+        border-bottom-width: 1px;
+        border-color: rgb(234, 234, 234);
+}
+.main-content {
+        flex: 11;
+        display: flex;
+}
+

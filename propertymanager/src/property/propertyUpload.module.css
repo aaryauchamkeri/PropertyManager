@@ -1,0 +1,27 @@
+.main {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+
+.mainUpload {
+    flex-direction: column;
+    justify-content: start;
+    align-items: space-between;
+}
+
+.stepperContainer {
+    flex: 1;
+}
+
+.content {
+    flex: 8;
+    /* background-color: blue; */
+}
+
+.nav {
+    flex: 1;
+}
