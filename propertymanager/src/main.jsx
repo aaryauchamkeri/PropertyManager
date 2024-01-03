@@ -10,6 +10,7 @@ import Login from './authentication/Login.jsx';
 import PropertyUpload from './property/PropertyUpload.jsx';
 import {createTheme} from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
+import Tenants from './tenants/Tenants.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,8 +29,18 @@ const router = createBrowserRouter([
         element: <Properties/>,
         children: [
           {
-            path: '/properties/createProperty',
+            path: '/properties/add',
             element: <PropertyUpload/>
+          }
+        ]
+      },
+      {
+        path: '/tenants',
+        element: <Tenants/>,
+        children: [
+          {
+            path: '/tenants/add',
+            element: <></>
           }
         ]
       },

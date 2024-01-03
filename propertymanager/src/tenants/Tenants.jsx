@@ -1,16 +1,16 @@
-import styles from './properties.module.css';
+import styles from './tenants.module.css';
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import {Button, TextField} from '@mui/material';
 import {Outlet} from 'react-router-dom';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { useRef } from 'react';
 import DataTable from '../components/table/Table';
+import { useRef } from 'react';
 
-export default function Properties() {
-    const tableHeads = useRef(['No', 'Address', 'Purchase Price', 'Tenants', 'Status', 'Actions']);
+export default function Tenants() {
     const location = useLocation();
     const navigator = useNavigate();
+    const tableHeads = useRef(['First Name', 'Last Name', 'Rent']);
 
     // check children paths
     if(location.pathname.endsWith('/add')) {
@@ -22,14 +22,12 @@ export default function Properties() {
     }
 
     function handleAddPropertyClick(e) {
-        navigator('/properties/add');
+        navigator('/properties/createProperty');
     }
-
-    function rand() {}
 
     return (
         <div className={styles.main}>
-            <Typography variant='h6' sx={{marginBottom: '0.5em'}}>Properties</Typography>
+            <Typography variant='h6' sx={{marginBottom: '0.5em'}}>Tenants</Typography>
             <div className={styles.tableContainer}>
                 <div className={styles.utilityContainer}>
                     <TextField id="outlined-basic" label="Search" size="small" fullWidth
@@ -37,10 +35,10 @@ export default function Properties() {
                     <Button variant="contained" sx={{whiteSpace: 'nowrap'}}
                         onClick={handleAddPropertyClick}>
                         <AddIcon fontSize='small' sx={{marginRight: '3px'}}/>
-                        Add Property
+                        Add Tenant
                     </Button>
                 </div>
-                <DataTable head={tableHeads.current} rows={[[1, 2, 3, 0, <span className={styles.occupiedLabelStyle}>Occupied</span>]]} buttonHandlers={[rand, rand, rand]}/>
+                <DataTable head={tableHeads.current} rows={[[1, 2]]} buttonHandlers={[() =>{}, () =>{}, () =>{}]}/>
             </div>
         </div>  
     )
