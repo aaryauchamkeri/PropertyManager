@@ -3,7 +3,8 @@ import mysql, { Connection, MysqlError } from 'mysql';
 var con: Connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'GSW30kdcurry'
+    password: 'GSW30kdcurry',
+    database: 'RealEstateManagement'
 });
 
 con.connect((err: MysqlError) => {

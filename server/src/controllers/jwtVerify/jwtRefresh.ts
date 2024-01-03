@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { ExtendedRequest, signAuth } from "../../middleware/authentication/jwtMiddleware.js";
 import { hasRefreshToken } from "../../database/saveRefreshToken.js";
 

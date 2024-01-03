@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { login } from '../controllers/login/loginout.js';
-import authorizeToken from '../middleware/authentication/jwtMiddleware.js';
+import { login, logout } from '../controllers/login/loginout.js';
 
 const router: Router = Router();
 
 
 router.post('/login', login);
-
+router.post('/logout', logout);
 
 
 export {router as authRouter};

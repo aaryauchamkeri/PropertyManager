@@ -8,12 +8,12 @@ const authSecret: string = "92a795190818bfdb7013a0c1ec506092c6fdd89f6a8854272c3f
 const refreshSecret: string = "7e7d4238ae1decda2bcd6b4ff7cd26755557ca937dec1f07cf0796790c76ff22f7b895015067d1ed055d9030e3fe6c001026346d89cb0b85e8d84a05b8853f2e";
 
 interface ExtendedRequest extends Request {
-    jwtDecoded: string
+    jwtDecoded: any
 }
 
 let authorizeToken = (req: ExtendedRequest, res: Response, next: Function) => {
     if(req.headers.authorization) {
-        jwt.verify(req.headers.authorization.split(' ')[1], authSecret, (err: Error, decodedToken: string) => {
+        jwt.verify(req.headers.authorization.split(' ')[1], authSecret, (err: Error, decodedToken: any) => {
             if(err) {
                 res.status(401).json({
                     "err" : "expired token",
@@ -30,7 +30,7 @@ let authorizeToken = (req: ExtendedRequest, res: Response, next: Function) => {
 }
 
 let signAuth = (payload: object): string => {
-    return jwt.sign(payload, authSecret, {expiresIn: '10s'});
+    return jwt.sign(payload, authSecret, {expiresIn: '24hr'});
 }
 
 let signRefresh = (payload: object): string => {

@@ -6,14 +6,12 @@ import getCollection from "../../database/getCollection.js";
 
 const propertiesCollection: Collection = getCollection('properties');
 
-
 let addProperty = async (req: ExtendedRequest, res: Response) => {
-
+    res.json('hello world');
 }
 
 
 let updateProperty = async (req: ExtendedRequest, res: Response) => {
-    const tkn = req.jwtDecoded; 
     const body = req.body;
     const propertyId = body.propertyId;
     if(!propertyId) {
@@ -45,4 +43,4 @@ let updateProperty = async (req: ExtendedRequest, res: Response) => {
     }
 }
 
-export {updateProperty};
+export {addProperty, updateProperty};
