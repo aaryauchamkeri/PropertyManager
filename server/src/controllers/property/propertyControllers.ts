@@ -22,7 +22,14 @@ let addProperty = async (req: ExtendedRequestAdmin, res: Response) => {
 
 let updateProperty = async (req: ExtendedRequestAdmin, res: Response) => {
     const body = req.body;
+    const jwtDecoded = req.jwtDecoded;
+    const accountId = req.header('accountId');
     const propertyId = body.propertyId;
+    const dataTbu = body.update;
+    const propertyService = new PropertyService(accountId, jwtDecoded.id, req.isAdmin);
+    let updated = propertyService.updateProperty(propertyId, dataTbu);
+    if(updated) res.status(200).end();
+    else res.status(400).end();
 }
 
 let deleteProperty = async (req: ExtendedRequestAdmin, res: Response) => {

@@ -46,9 +46,14 @@ export default class PropertyService {
         }
     }
 
-    async updateProperties(propertyId: string, data: any): Promise<boolean> {
+    async updateProperty(propertyId: string, data: any): Promise<boolean> {
         let permissionGranted:boolean = await this.checkAccountPropertyPermission(propertyId);
         if (permissionGranted){
+            if(data.id) {
+                delete data.id;
+            } else if(data.accountId) {
+                delete data.accountId;
+            }
             let qResult = await remDbConDynamic('properties')
                                 .update({...data})
                                 .where({id: propertyId});
