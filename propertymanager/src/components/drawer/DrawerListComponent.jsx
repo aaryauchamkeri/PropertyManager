@@ -19,7 +19,7 @@ export default function DrawerListComponent({icon, label, link, ind, selected, s
 
     return (
         <Link to = {link} disabled style={{textDecoration: 'none', color: 'black'}}>
-            <ListItem sx={{margin: '0em 0 0.5em 0', backgroundColor: 'rgb(243, 243, 243)', padding: 0, borderRadius: '0.8em'}}>
+            <ListItem sx={{margin: '0em 0 0.5em 0', backgroundColor: 'white' /*'rgb(243, 243, 243)'*/, padding: 0, borderRadius: '0.8em'}}>
                 <ListItemButton selected = {selected} onClick={setSelected} sx={{borderRadius: '0.5em'}}> 
                     {icon}
                     <ListItemText>

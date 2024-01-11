@@ -20,7 +20,9 @@ let login = async (req: Request, res: Response, next: any) => {
     const {username, password} = req.body;
     if(username && password) {
         try {
-            let results = await remDbConDynamic.select('password', 'id').from('users');
+            let results = await remDbConDynamic('users').select('*').where({
+                username: username
+            });
             if(results.length >= 1) {
                 const userData = {
                     id: results[0].id,
@@ -33,7 +35,11 @@ let login = async (req: Request, res: Response, next: any) => {
                 res.status(200).json({
                     auth: authToken,
                     refresh: refreshToken,
-                    accounts: accounts
+                    accounts: accounts,
+                    firstName: results[0].first_name,
+                    lastName: results[0].last_name,
+                    username: results[0].username,
+                    email: results[0].email
                 });
             } else {
                 res.status(401).json({message: 'Invalid username or password'});
@@ -59,4 +65,4 @@ let logout = (req: Request, res: Response, next: any) => {
     }
 }
 
-export {login, logout};
+export {login, logout, getAssociatedAccounts};

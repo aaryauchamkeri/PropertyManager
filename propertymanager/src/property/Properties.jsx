@@ -12,6 +12,10 @@ export default function Properties() {
     const location = useLocation();
     const navigator = useNavigate();
 
+    async function getProperties() {
+        // fetch('http://localhost:3000/')
+    }
+
     // check children paths
     if(location.pathname.endsWith('/add')) {
         return (

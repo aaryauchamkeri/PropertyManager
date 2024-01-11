@@ -8,14 +8,19 @@ const CredInfoCtx = createContext();
 
 function App() {
   const [signedIn, setSignedIn] = useState(false);
+  const [authKey, setAuthKey] = useState();
+  const [accounts, setAccounts] = useState();
   const [selected, setSelected] = useState();
+  const [username, setUsername] = useState();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState();
+
   const location = useLocation();
   const navigation = useNavigate();
 
   useEffect(() => {
-    if(1 === 1) {
-      
-    } else if(!signedIn && location.pathname !== '/login') {
+    if(!signedIn && location.pathname !== '/login') {
       navigation('/login');
     }
   });
@@ -31,7 +36,14 @@ function App() {
 
         </div>
         <div className="main-content">
-          <CredInfoCtx.Provider value={{signedIn, setSignedIn}}>
+          <CredInfoCtx.Provider value={{signedIn, setSignedIn,
+                                        authKey, setAuthKey,
+                                        accounts, setAccounts,
+                                        username, setUsername,
+                                        firstName, setFirstName,
+                                        lastName, setLastName,
+                                        email, setEmail
+                                      }}>
             <Outlet/>
           </CredInfoCtx.Provider>
         </div>

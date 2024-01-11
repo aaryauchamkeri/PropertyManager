@@ -23,16 +23,18 @@ export default function DataTable({head, rows, buttonHandlers}) {
         <>
             <TableContainer>
                 <Table style={{tableLayout: 'fixed'}}>
-                    <TableHead sx={{backgroundColor: 'rgb(247, 247, 247)',
+                    <TableHead>
+                        <TableRow sx={{backgroundColor: 'rgb(247, 247, 247)',
                                     color: 'white'}}>
-                        {
-                            head.map((cell, index) => {
-                                return (<TableCell key={index} sx={{paddingTop: headCellStyle.paddingTop,
-                                            paddingBottom: headCellStyle.paddingBottom}}>
-                                            {cell}    
-                                        </TableCell>)
-                            })
-                        }
+                            {
+                                head.map((cell, index) => {
+                                    return (<TableCell key={index} sx={{paddingTop: headCellStyle.paddingTop,
+                                                paddingBottom: headCellStyle.paddingBottom}}>
+                                                {cell}    
+                                            </TableCell>)
+                                })
+                            }
+                        </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow sx={{backgroundColor: 'white'}}>

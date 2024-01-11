@@ -4,7 +4,6 @@ export default class PropertyService {
 
     admin: boolean;
     accountId: string;
-    propertyId: string;
     userId: string;
         
     constructor(accountId: string, userId: string, admin: boolean) {
@@ -15,10 +14,10 @@ export default class PropertyService {
     
     async checkAccountPropertyPermission(propertyId: string): Promise<boolean> {
         const results = await remDbConDynamic('properties')
-                            .join('accounts', 'properties.accountId', '=', 'accounts.id')
-                            .where({
-                                'properties.id': propertyId
-                            });
+                                .join('accounts', 'properties.accountId', '=', 'accounts.id')
+                                .where({
+                                    'properties.id': propertyId
+                                });
         if(results.length > 0) {
             return true;
         }
@@ -76,4 +75,11 @@ export default class PropertyService {
         }
     }
 
+    async getProperties(): Promise<any> {
+        let results = await remDbConDynamic('properties').select('*')
+                            .where({
+                                accountId: this.accountId
+                            });
+        return results;
+    }
 }
