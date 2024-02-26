@@ -3,17 +3,27 @@ import { remDbConDynamic } from "../database/connection.js";
 
 export default class UserService {
 
-    id: number
+    accountId: string
 
-    constructor(id: number) {
-        this.id = id;
+    constructor() {
+        
     }
 
-    async getUserData() {
-        let result = await remDbConDynamic('users').select('*').where({
-            id: this.id
+    async getUserData(id: string) {
+        let userData: object;
+    
+        let usersInAccount = await remDbConDynamic('account_users').where({
+            accountId: this.accountId
         });
 
-        return result[0];
+        usersInAccount.forEach(async userAccount => {
+            if(userAccount.userId == id) {
+                userData = await remDbConDynamic('users').select('*').where({
+                    id: id
+                })[0];
+            }
+        })
+
+        return userData;
     }
 }

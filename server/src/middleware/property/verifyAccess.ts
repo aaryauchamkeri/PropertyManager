@@ -1,13 +1,14 @@
 import { Response } from "express";
-import { ExtendedRequest } from "../authentication/jwtMiddleware.js";
+import { RequestWithId } from "../authentication/jwtMiddleware.js";
 import { remDbConDynamic } from "../../database/connection.js";
 
 
-interface ExtendedRequestAdmin extends ExtendedRequest {
-    isAdmin: boolean
+interface RequestWithIdAdmin extends RequestWithId {
+    isAdmin: boolean,
+    accountId: string
 }
 
-const checkAccountAccess = async (req: ExtendedRequestAdmin, res: Response, next) => {
+const checkAccountAccess = async (req: RequestWithIdAdmin, res: Response, next) => {
     const userInfo = req.jwtDecoded;
     const userId: string = userInfo.id;
     const accountId = req.header('accountId');
@@ -22,13 +23,14 @@ const checkAccountAccess = async (req: ExtendedRequestAdmin, res: Response, next
             } else {
                 req.isAdmin = false;
             }
+            req.accountId = accountId;
             next();
         } else {
-            res.status(401).end({message: 'unauthorized'});
+            res.status(401).json({message: 'no account id present'});
         }
     } else {
         res.status(400).end();
     }
 }
 
-export {checkAccountAccess, ExtendedRequestAdmin};
+export {checkAccountAccess, RequestWithIdAdmin};

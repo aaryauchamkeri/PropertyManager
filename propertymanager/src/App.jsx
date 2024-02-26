@@ -8,13 +8,8 @@ const CredInfoCtx = createContext();
 
 function App() {
   const [signedIn, setSignedIn] = useState(false);
-  const [authKey, setAuthKey] = useState();
-  const [accounts, setAccounts] = useState();
+  const [userData, setUserData] = useState({});
   const [selected, setSelected] = useState();
-  const [username, setUsername] = useState();
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-  const [email, setEmail] = useState();
 
   const location = useLocation();
   const navigation = useNavigate();
@@ -32,17 +27,9 @@ function App() {
           selected = {selected} setSelected = {setSelected}/>
       }
       <div className="content-container">
-        <div className="accessibility">
-
-        </div>
         <div className="main-content">
           <CredInfoCtx.Provider value={{signedIn, setSignedIn,
-                                        authKey, setAuthKey,
-                                        accounts, setAccounts,
-                                        username, setUsername,
-                                        firstName, setFirstName,
-                                        lastName, setLastName,
-                                        email, setEmail
+                                        userData, setUserData
                                       }}>
             <Outlet/>
           </CredInfoCtx.Provider>

@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import DrawerListComponent from './DrawerListComponent';
-import NestedParentDrawerListComponent from './NestedParentDrawerListComponent.jsx';
+// import NestedParentDrawerListComponent from './NestedParentDrawerListComponent.jsx';
 import PersonIcon from '@mui/icons-material/Person';
 import styles from './drawer.module.css';
 import Typography from '@mui/material/Typography';
 import HomeIcon from '@mui/icons-material/Home';
 import DescriptionIcon from '@mui/icons-material/Description';
 import List from '@mui/material/List';
-import Collapse from '@mui/material/Collapse';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ApartmentIcon from '@mui/icons-material/Apartment';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {Select, MenuItem, InputLabel} from '@mui/material';
+import HistoryIcon from '@mui/icons-material/History';
+import {Select, MenuItem, InputLabel, FormControl} from '@mui/material';
 
 
 export default function Drawer({selected, setSelected}) {
@@ -27,12 +25,41 @@ export default function Drawer({selected, setSelected}) {
     return (
         <div className={styles.parent}>
             <div className={styles.close}>
+                <FormControl sx={{width: '100%', color: 'white'}} size='small'>
+                    {/* <InputLabel id='workSpace'>Workspace</InputLabel> */}
+                    <Select
+                        // labelId='workSpace'
+                        displayEmpty
+                        inputProps={{'aria-label': 'Without label'}}
+                        defaultValue='hello world'
+                        value={'hello world'}
+                        label={'age'}
+                        sx={{color: 'white', borderColor: 'red',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: 'white'
+                            },
+                             "& .MuiSvgIcon-root": {color: "white"}
+                            }}
+                    >
+                        <MenuItem
+                            value = 'hello world'
+                            // sx={{color: 'white'}}
+                        >
+                            Ten
+                        </MenuItem>
+                    </Select>
+                </FormControl>
             </div>
             <div className={styles.main}>
                 <List sx={{padding: '0.5em'}}>
+                    {/* <NestedParentDrawerListComponent label="Hello"/>
+                    <div style={{paddingLeft: '0.7em'}}>
+                        
+
+                    </div> */}
                     <DrawerListComponent selected={selected === 0} setSelected={setSelected}
-                        label="Dashboard" link="/" ind={0}
-                        icon={<DashboardIcon fontSize='small'/>}/>
+                            label="Dashboard" link="/" ind={0}
+                            icon={<DashboardIcon fontSize='small'/>}/>
                     <DrawerListComponent selected={selected === 1} setSelected={setSelected}
                         label="Properties" link="/properties" ind={1}
                         icon={<HomeIcon fontSize='small'/>}/>
@@ -45,6 +72,9 @@ export default function Drawer({selected, setSelected}) {
                     <DrawerListComponent selected={selected === 4} setSelected={setSelected}
                         label="Templates" link="/propertyUpload" ind={4}
                         icon={<DescriptionIcon/>}/>
+                    <DrawerListComponent selected={selected === 5} setSelected={setSelected}
+                        label="Log" link="/log" ind={5}
+                        icon={<HistoryIcon/>}/>
                 </List>
             </div>
             <div className={styles.account}>

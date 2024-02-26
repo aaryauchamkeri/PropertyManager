@@ -9,7 +9,7 @@ router.use(authorizeToken);
 
 router.get('/', (req, res) => {
     res.end('hlelo world');
-})
+});
 
 
 export {router as infoRouter};

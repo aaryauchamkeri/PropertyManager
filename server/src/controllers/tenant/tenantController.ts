@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { ExtendedRequestAdmin } from "../../middleware/property/verifyAccess.js";
+import { RequestWithIdAdmin } from "../../middleware/property/verifyAccess.js";
 import TenantService from "../../services/TenantService.js";
 
 
-let addTenant = async (req: ExtendedRequestAdmin, res: Response, next) => {
+let addTenant = async (req: RequestWithIdAdmin, res: Response, next) => {
     try {
         let body = req.body;
         let jwtDecoded = req.jwtDecoded;
@@ -22,26 +22,24 @@ let addTenant = async (req: ExtendedRequestAdmin, res: Response, next) => {
     }
 }
 
-let updateTenant = (req: ExtendedRequestAdmin, res: Response, next) => {
+let updateTenant = (req: RequestWithIdAdmin, res: Response, next) => {
     try {
-        let body = req.body;
+        let {id, update} = req.body;
         let jwtDecoded = req.jwtDecoded;
-        let tenantId = req.header('tenantId');
-        let accountId = req.header('accountId');
-        let tenantInformation = body.info;
+        let accountId = req.accountId;
         const tenantService = new TenantService(accountId, jwtDecoded.id);
-        tenantService.updateTenant(tenantId, tenantInformation);
+        tenantService.updateTenant(id, update);
         res.status(200).end();
     } catch(err) {
         next(err);
     }
 }
 
-let deleteTenant = (req: ExtendedRequestAdmin, res: Response, next) => {
+let deleteTenant = (req: RequestWithIdAdmin, res: Response, next) => {
     try {
         let jwtDecoded = req.jwtDecoded;
         let tenantId = req.header('tenantId');
-        let accountId = req.header('accountId');
+        let accountId = req.accountId;
         let tenantService = new TenantService(accountId, jwtDecoded.id);
         tenantService.deleteTenant(tenantId);
         res.status(200).end();
@@ -50,4 +48,15 @@ let deleteTenant = (req: ExtendedRequestAdmin, res: Response, next) => {
     }
 }
 
-export {addTenant, updateTenant, deleteTenant};
+let viewAllTenants = async (req: RequestWithIdAdmin, res: Response, next) => {
+    try {
+        let jwtDecoded = req.jwtDecoded;
+        let accountId = req.accountId;
+        let tenantService = new TenantService(accountId, jwtDecoded.id);
+        res.status(200).json(await tenantService.viewAllTenants());
+    } catch(err) {
+        next(err);
+    }
+}
+
+export {addTenant, updateTenant, deleteTenant, viewAllTenants};

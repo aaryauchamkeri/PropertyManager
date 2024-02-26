@@ -3,7 +3,7 @@ import {Typography} from '@mui/material'
 
 export default function Dashboard() {
     return (
-        <div className = {styles.parent}>
+        <div class = 'tw-bg-red-500'>
             <Typography variant = 'h5'>hello wolrd</Typography>
         </div>
     ); 

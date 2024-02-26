@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import { CredInfoCtx } from "../App";
 import getCookie from "../utils/getCookie";
 
-export default function Login() {
+export default function Login({nextPage = '/'}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const signInContext = useContext(CredInfoCtx);
@@ -14,7 +14,7 @@ export default function Login() {
 
   useEffect(() => {
     if(signInContext.signedIn) {
-      navigation('/');
+      navigation(nextPage);
     }
   });
 
@@ -32,13 +32,8 @@ export default function Login() {
           response.then(async (res) => {
             let data = await res.json();
             signInContext.setSignedIn(true);
-            signInContext.setAuthKey(data.newKey);
-            signInContext.setAccounts(data.accounts);
-            signInContext.setUsername(data.userData.username);
-            signInContext.setFirstName(data.userData.first_name);
-            signInContext.setLastName(data.userData.last_name);
-            signInContext.setEmail(data.userData.email);
-            navigation('/');
+            signInContext.setUserData({...data});
+            navigation(nextPage);
           }).catch(err => {
             console.log(err);
           })
@@ -56,19 +51,11 @@ export default function Login() {
       body: JSON.stringify({"username": username, "password": password})
     });
     if(response.status === 200) {
-      let {
-            accounts, auth, refresh,
-            username, first_name, last_name, 
-            email
-          } = await response.json();
-      document.cookie = `refresh=${refresh}`;
-      signInContext.setAuthKey(auth);
-      signInContext.setAccounts(accounts);
-      signInContext.setUsername(username);
-      signInContext.setFirstName(first_name);
-      signInContext.setLastName(last_name);
-      signInContext.setEmail(email);
-      navigation('/');
+      let data = await response.json();
+      document.cookie = `refresh=${data.refresh}`;
+      signInContext.setSignedIn(true);
+      signInContext.setUserData({...data});
+      navigation(nextPage);
     }
   }
 

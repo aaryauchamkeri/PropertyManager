@@ -55,4 +55,12 @@ export default class TenantService {
         }).where({id: tenantId});
         return true;
     }
+
+    async viewAllTenants() {
+        let results = await remDbConDynamic('tenants').select('*')
+                .where({
+                    accountId: 1
+                });
+        return results;
+    }
 }

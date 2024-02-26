@@ -1,0 +1,34 @@
+.parent {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+}
+
+.parent > div {
+    overflow-y: scroll;
+    display: inline-block;
+}
+
+.invoiceTemplateContainer {
+    background-color: rgb(237, 238, 238);
+    padding: 2em;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: rgb(153, 153, 153);
+    height: 100%;
+    width: 65%;
+}
+
+.paper {
+    padding: 3.5em;
+    background-color: white;
+    width: 850px;
+    height: 1100px;
+    margin-top: 2em;
+    box-shadow: 1em 1em 1em rgb(216, 216, 216);
+}
+
+.details {
+
+}

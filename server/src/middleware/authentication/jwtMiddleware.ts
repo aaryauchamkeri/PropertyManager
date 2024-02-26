@@ -7,11 +7,15 @@ config({path: '../../.env'});
 const authSecret: string = "92a795190818bfdb7013a0c1ec506092c6fdd89f6a8854272c3f933ecb22f10183d4b52889f260e9c07061939b79e81ff8c7bf86da3e5f9e64da9787c22304c2";
 const refreshSecret: string = "7e7d4238ae1decda2bcd6b4ff7cd26755557ca937dec1f07cf0796790c76ff22f7b895015067d1ed055d9030e3fe6c001026346d89cb0b85e8d84a05b8853f2e";
 
-interface ExtendedRequest extends Request {
-    jwtDecoded: any
+interface JwtDecoded {
+    id: string
 }
 
-let authorizeToken = (req: ExtendedRequest, res: Response, next: Function) => {
+interface RequestWithId extends Request {
+    jwtDecoded: JwtDecoded
+}
+
+let authorizeToken = (req: RequestWithId, res: Response, next: Function) => {
     if(req.headers.authorization) {
         jwt.verify(req.headers.authorization.split(' ')[1], authSecret, (err: Error, decodedToken: any) => {
             if(err) {
@@ -39,4 +43,4 @@ let signRefresh = (payload: object): string => {
 
 export default authorizeToken;
 export {signAuth, signRefresh};
-export {ExtendedRequest};
+export {RequestWithId};

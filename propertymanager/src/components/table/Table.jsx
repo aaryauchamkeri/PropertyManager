@@ -15,10 +15,7 @@ const rowCellStyle = {
     paddingBottom: '0.3em'
 }
 
-export default function DataTable({head, rows, buttonHandlers}) {
-    console.log(typeof head + " " + typeof row);
-    console.log(head);
-    console.log(rows);
+export default function DataTable({head, rows, buttonHandlers, ...otherInfo}) {
     return (
         <>
             <TableContainer>
@@ -28,7 +25,7 @@ export default function DataTable({head, rows, buttonHandlers}) {
                                     color: 'white'}}>
                             {
                                 head.map((cell, index) => {
-                                    return (<TableCell key={index} sx={{paddingTop: headCellStyle.paddingTop,
+                                    return (<TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                 paddingBottom: headCellStyle.paddingBottom}}>
                                                 {cell}    
                                             </TableCell>)
@@ -37,47 +34,50 @@ export default function DataTable({head, rows, buttonHandlers}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow sx={{backgroundColor: 'white'}}>
-                            {
-                                rows.map((cell, index) => {
-                                    return cell.map((c, i) => {
-                                        return (<TableCell key={(i + 1) * (index + 1)} sx={{paddingTop: headCellStyle.paddingTop,
-                                                    paddingBottom: headCellStyle.paddingBottom}}>
-                                                    {c}    
-                                                </TableCell>)
-                                    })
-                                })
-                            }
-                            {/* <TableCell key={1} sx={{paddingTop: rowCellStyle.paddingTop,
-                                                paddingBottom: rowCellStyle.paddingBottom}}>
-                                <Typography variant='subtitle1'>
-                                    <span className={styles.occupiedLabelStyle}>
-                                        Occupied
-                                    </span>
-                                </Typography>
-                            </TableCell> */}
-                            <TableCell key={1} sx={{paddingTop: rowCellStyle.paddingTop,
-                                                paddingBottom: rowCellStyle.paddingBottom}}>
-                                <IconButton onClick={buttonHandlers[0]}>
-                                    <VisibilityIcon sx = 
-                                        {{
-                                            color: 'blue',
-                                        }}/>
-                                </IconButton>
-                                <IconButton onClick={buttonHandlers[0]}>
-                                    <ModeEditIcon sx = 
-                                        {{
-                                            color: 'green',
-                                        }}/>
-                                </IconButton>
-                                <IconButton onClick={buttonHandlers[0]}>
-                                    <DeleteIcon sx = 
-                                        {{
-                                            color: 'red',
-                                        }}/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
+                        {
+                            rows.map((cell, ind) => {
+                                return (
+                                    <TableRow sx={{backgroundColor: 'white'}}>
+                                        <TableCell>
+                                            {ind}
+                                        </TableCell>
+                                        <TableCell sx={{paddingTop: headCellStyle.paddingTop,
+                                                                paddingBottom: headCellStyle.paddingBottom}}>
+                                            {cell['address']}
+                                        </TableCell>
+                                        <TableCell sx={{paddingTop: headCellStyle.paddingTop,
+                                                                paddingBottom: headCellStyle.paddingBottom}}>
+                                            {cell['purchase_price'] ? cell['purchase_price'] : 'N/A'}
+                                        </TableCell>
+                                        <TableCell sx={{paddingTop: headCellStyle.paddingTop,
+                                                                paddingBottom: headCellStyle.paddingBottom}}>
+                                            {otherInfo.tenants[ind] ? otherInfo.tenants[ind].length : 0}
+                                        </TableCell>
+                                        <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
+                                                            paddingBottom: rowCellStyle.paddingBottom}}>
+                                            <IconButton onClick={buttonHandlers[0]}>
+                                                <VisibilityIcon sx = 
+                                                    {{
+                                                        color: 'blue',
+                                                    }}/>
+                                            </IconButton>
+                                            <IconButton onClick={buttonHandlers[0]}>
+                                                <ModeEditIcon sx = 
+                                                    {{
+                                                        color: 'green',
+                                                    }}/>
+                                            </IconButton>
+                                            <IconButton onClick={buttonHandlers[0]}>
+                                                <DeleteIcon sx = 
+                                                    {{
+                                                        color: 'red',
+                                                    }}/>
+                                            </IconButton>
+                                        </TableCell>
+                                </TableRow>
+                                )
+                            })
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>

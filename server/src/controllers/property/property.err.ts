@@ -1,12 +1,14 @@
 import { Response } from "express"
-import { ExtendedRequestAdmin } from "../../middleware/property/verifyAccess.js"
+import { RequestWithIdAdmin } from "../../middleware/property/verifyAccess.js"
 
 
 
-let propertyErr = (err: Error, req: ExtendedRequestAdmin, res: Response, next) => {
+let propertyErr = (err: Error, req: RequestWithIdAdmin, res: Response, next) => {
     if(res.headersSent) {
+        console.log(err);
         next(err);
     } else {
+        console.log(err);
         res.status(400).json({message: err.message});
     }
 }

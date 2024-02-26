@@ -7,10 +7,18 @@ import Dashboard from './dashboard/Dashboard.jsx';
 import Properties from './property/Properties.jsx';
 import Calendar from './components/calendar/Calendar.jsx';
 import Login from './authentication/Login.jsx';
-import PropertyUpload from './property/PropertyUpload.jsx';
+import PropertyUpload from './property/propertyUpload/PropertyUpload.jsx';
 import {createTheme} from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import Tenants from './tenants/Tenants.jsx';
+import Invoice from './log/Invoice.jsx';
+import ViewProperty from './property/propertyView/ViewProperty.jsx';
+import Log from './log/Log.jsx';
+import TenantUpload from './tenants/tenantUpload/TenantUpload.jsx';
+
+let propertyViewLoader = (req) => {
+    return req.params.id;
+}
 
 const router = createBrowserRouter([
   {
@@ -31,6 +39,11 @@ const router = createBrowserRouter([
           {
             path: '/properties/add',
             element: <PropertyUpload/>
+          },
+          {
+            path: '/properties/:id',
+            loader: propertyViewLoader,
+            element: <ViewProperty/>
           }
         ]
       },
@@ -40,7 +53,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/tenants/add',
-            element: <></>
+            element: <TenantUpload/>
           }
         ]
       },
@@ -51,6 +64,16 @@ const router = createBrowserRouter([
       {
         element: <Login/>,
         path: '/login'
+      },
+      {
+        path: '/log',
+        element: <Log/>,
+        children: [
+          {
+            path: '/log/invoice',
+            element: <Invoice/>
+          }
+        ]
       }
     ]
   },

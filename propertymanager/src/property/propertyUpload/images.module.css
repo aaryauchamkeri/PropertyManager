@@ -1,0 +1,83 @@
+div {
+    box-sizing: border-box;
+}
+img {
+    width: 10%;
+    height: 10%;
+    max-height: 100%;
+}
+
+.main {
+    height: 100%;
+    width: 100%;
+    padding: 0.7em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageUpload {
+    width: 70%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    background-color: rgb(251, 251, 251 );
+    border-radius: 1em;
+}
+
+.imgUploadContainerInfo {
+    width: 100%;
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fileParentContainer {
+    height: 100%;
+    width: 100%;
+    padding: 0 1em 1em 1em;
+    border-radius: inherit;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    overflow-y: hidden;
+}
+
+.uploadImages {
+    height: 100%;
+    width: 50%;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: rgb(201, 201, 201);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.uploadedFiles {
+    height: 100%;
+    width: 50%;
+    padding: 1em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(201, 201, 201);
+    overflow-y: scroll;
+}
+
+.file {
+    width: 100%;
+    display: flex;
+    background: rgb(131,58,180);
+    background: linear-gradient(225deg, rgba(131,58,180,1) 0%, rgba(29,253,245,1) 50%, rgba(43,249,235,1) 53%, rgba(52,246,228,1) 55%, rgba(74,238,210,1) 60%, rgba(83,235,203,1) 62%, rgba(127,219,168,1) 72%, rgba(140,214,157,1) 75%, rgba(252,176,69,1) 100%);
+    margin: 0 0 0.5em 0;
+    padding: 0.5em;
+    border-radius: 1em;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -22,7 +22,6 @@ con.connect((err: MysqlError) => {
     if(err) {
         console.log(err.message);
     } else {
-        console.log('Connected to mysql.');
     }
 });
 

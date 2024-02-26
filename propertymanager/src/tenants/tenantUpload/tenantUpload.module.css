@@ -1,0 +1,35 @@
+.main {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* background-color: red; */
+}
+
+.tenantInformation {
+    width: 100%;
+    flex: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.uploadCard {
+    width: 50%;
+    /* height: 70%; */
+    padding: 1em;
+    background-color: rgb(250, 250, 250);
+    font-size: 10px;
+}
+
+.footerNavigation {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em 0 1em;
+}
