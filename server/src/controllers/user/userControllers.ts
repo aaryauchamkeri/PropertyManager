@@ -8,6 +8,8 @@ let getUserData = async (req: RequestWithIdAdmin, res: Response, next) => {
         const userId = String(req.query.id);
         let userService = new UserService();
         let userData = await userService.getUserData(userId);
+        delete userData.id;
+        delete userData.password;
         res.json(userData);
     } catch(err) {
         next(err);

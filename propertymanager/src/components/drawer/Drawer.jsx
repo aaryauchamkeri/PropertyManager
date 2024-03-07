@@ -11,7 +11,6 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HistoryIcon from '@mui/icons-material/History';
-import {Select, MenuItem, InputLabel, FormControl} from '@mui/material';
 
 
 export default function Drawer({selected, setSelected}) {
@@ -25,30 +24,11 @@ export default function Drawer({selected, setSelected}) {
     return (
         <div className={styles.parent}>
             <div className={styles.close}>
-                <FormControl sx={{width: '100%', color: 'white'}} size='small'>
-                    {/* <InputLabel id='workSpace'>Workspace</InputLabel> */}
-                    <Select
-                        // labelId='workSpace'
-                        displayEmpty
-                        inputProps={{'aria-label': 'Without label'}}
-                        defaultValue='hello world'
-                        value={'hello world'}
-                        label={'age'}
-                        sx={{color: 'white', borderColor: 'red',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'white'
-                            },
-                             "& .MuiSvgIcon-root": {color: "white"}
-                            }}
-                    >
-                        <MenuItem
-                            value = 'hello world'
-                            // sx={{color: 'white'}}
-                        >
-                            Ten
-                        </MenuItem>
-                    </Select>
-                </FormControl>
+                <select value={1} style={{color: 'white', backgroundColor: 'rgb(25, 25, 25)'}}>
+                    <option value={1}>Workspace 1</option>
+                    <option value={1}>Workspace 2</option>
+                    <option value={1}>Workspace 3</option>
+                </select>
             </div>
             <div className={styles.main}>
                 <List sx={{padding: '0.5em'}}>
@@ -59,27 +39,27 @@ export default function Drawer({selected, setSelected}) {
                     </div> */}
                     <DrawerListComponent selected={selected === 0} setSelected={setSelected}
                             label="Dashboard" link="/" ind={0}
-                            icon={<DashboardIcon fontSize='small'/>}/>
+                            icon={<DashboardIcon fontSize='small' sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 1} setSelected={setSelected}
                         label="Properties" link="/properties" ind={1}
-                        icon={<HomeIcon fontSize='small'/>}/>
+                        icon={<HomeIcon fontSize='small' sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 2} setSelected={setSelected}
                         label="Tenants" link="/tenants" ind={2}
-                        icon={<PersonIcon fontSize='small'/>}/>
+                        icon={<PersonIcon fontSize='small' sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 3} setSelected={setSelected}
                         label="Calendar" link = "/calendar" ind={3}
-                        icon={<CalendarMonthIcon/>}/>
+                        icon={<CalendarMonthIcon sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 4} setSelected={setSelected}
                         label="Templates" link="/propertyUpload" ind={4}
-                        icon={<DescriptionIcon/>}/>
+                        icon={<DescriptionIcon sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 5} setSelected={setSelected}
                         label="Log" link="/log" ind={5}
-                        icon={<HistoryIcon/>}/>
+                        icon={<HistoryIcon sx={{color: 'white'}}/>}/>
                 </List>
             </div>
             <div className={styles.account}>
-                <Typography variant="subtitle1">Aarya Chamkeri</Typography>
                 <SettingsIcon/>
+                <Typography variant="subtitle1">Settings</Typography>
             </div>
         </div>
     )

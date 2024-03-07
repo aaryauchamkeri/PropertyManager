@@ -45,6 +45,21 @@ let viewImages = async (req: RequestWithIdAdmin, res: Response, next) => {
     }
 }
 
+let viewFiles = async (req: RequestWithIdAdmin, res: Response, next) => {
+    try {
+        let propertyId = String(req.query.propertyId);
+        if(propertyId) {
+            let propertyService = new PropertyService(req.accountId, req.jwtDecoded.id, req.isAdmin);
+            let images = await propertyService.getFilesByProperty(propertyId, false);
+            res.status(200).json(images);
+        } else {
+            next(new Error('No property id provided'));
+        }
+    } catch(err) {
+        res.status(400).end();
+    }
+}
+
 let updateProperty = async (req: RequestWithIdAdmin, res: Response, next) => {
     try{
         const body = req.body;
@@ -127,7 +142,7 @@ let addNote = async (req: RequestWithIdAdmin, res: Response, next) => {
         await propertyService.addNote(propertyId, note, userId, new Date());
         res.status(200).end();
     } catch (err) {
-        next(err);
+        res.status(400).end();
     }
 }
 
@@ -143,7 +158,7 @@ let addTask = async (req: RequestWithIdAdmin, res: Response, next) => {
         await propertyService.addTask(propertyId, task, deadline, userId, calendar);
         res.status(200).end();
     } catch (err) {
-        next(err);
+        res.status(400).end();
     }
 }
 
@@ -156,7 +171,7 @@ let getNotes = async(req: RequestWithIdAdmin, res: Response, next) => {
         let notes = await propertyService.getNotes(propertyId);
         res.json(notes);
     } catch(err) {
-        next(err);
+        res.status(400).end();
     }
 }
 
@@ -169,10 +184,35 @@ let getTasks = async(req: RequestWithIdAdmin, res: Response, next) => {
         let tasks = await propertyService.getTasks(propertyId);
         res.json(tasks);
     } catch(err) {
-        next(err);
+        res.status(400).end();
     }
 }
 
-export {addProperty, addImages, viewImages, updateProperty, deleteProperty, 
-        getProperties, viewProperty, viewTenants, addNote, addTask, getNotes,
-        getTasks};
+let getAllNotes = async (req: RequestWithIdAdmin, res: Response, next) => {
+    try {
+        const accountId = req.accountId;
+        const userId = req.jwtDecoded.id;
+        const propertyService = new PropertyService(accountId, userId, req.isAdmin);
+        const allNotes = await propertyService.getAllNotes();
+        res.json(allNotes);
+    } catch (err) {
+        res.status(400).end();
+    }
+}
+
+let getAllTasks = async (req: RequestWithIdAdmin, res: Response, next) => {
+    try {
+        const accountId = req.accountId;
+        const userId = req.jwtDecoded.id;
+        const propertyService = new PropertyService(accountId, userId, req.isAdmin);
+        const allNotes = await propertyService.getAllTasks();
+        res.json(allNotes);
+    } catch (err) {
+        res.status(400).end();
+    }
+}
+
+export {addProperty, addImages, viewImages, viewFiles, updateProperty, 
+        deleteProperty, getProperties, viewProperty, viewTenants, addNote, 
+        addTask, getNotes, getTasks, getAllNotes, getAllTasks};
+        

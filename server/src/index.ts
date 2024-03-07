@@ -8,6 +8,7 @@ import { propertyRouter } from './routes/propertyRoutes.js';
 import { tenantRouter } from './routes/tenantRoutes.js';
 import { scheduleRouter } from './routes/scheduleRoutes.js';
 import { cdnRouter } from './routes/cdnRoutes.js';
+import { userRouter } from './routes/userRoutes.js';
 
 const app = express();
 app.use(cors());
@@ -21,5 +22,6 @@ app.use('/properties', propertyRouter);
 app.use('/tenants', tenantRouter);
 app.use('/schedule', scheduleRouter);
 app.use('/media', cdnRouter);
+app.use('/users', userRouter);
 
 app.listen(3000, '0.0.0.0', () => {});

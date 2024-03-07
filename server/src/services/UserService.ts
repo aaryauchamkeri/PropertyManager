@@ -10,20 +10,24 @@ export default class UserService {
     }
 
     async getUserData(id: string) {
-        let userData: object;
+        let userData;
     
-        let usersInAccount = await remDbConDynamic('account_users').where({
-            accountId: this.accountId
+        // let usersInAccount = await remDbConDynamic('account_users').where({
+        //     accountId: this.accountId
+        // });
+
+        // usersInAccount.forEach(async userAccount => {
+        //     if(userAccount.userId == id) {
+                // userData = await remDbConDynamic('users').select('*').where({
+                //     id: id
+                // })[0];
+        //     }
+        // })
+
+        userData = await remDbConDynamic('users').select('*').where({
+            id: id
         });
 
-        usersInAccount.forEach(async userAccount => {
-            if(userAccount.userId == id) {
-                userData = await remDbConDynamic('users').select('*').where({
-                    id: id
-                })[0];
-            }
-        })
-
-        return userData;
+        return userData[0];
     }
 }

@@ -3,8 +3,8 @@
     height: 100%;
     box-sizing: border-box;
     padding: 1em;
-    background-color: rgb(243, 243, 243);
     overflow-y: scroll;
+    background-color: rgb(243, 243, 243);
 }
 
 .roundedElem {

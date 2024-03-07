@@ -2,6 +2,7 @@ import schedule from 'node-schedule';
 import { sendMail } from '../utilities/mailer.js';
 import { remDbConDynamic } from '../database/connection.js';
 
+// Portfolio pms password: hpbk cclj jrby lmpv
 class EventService {
 
     accountId: Number

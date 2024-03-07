@@ -2,19 +2,25 @@ import styles from "./login.module.css";
 import TextField from "@mui/material/TextField";
 import {Button, Typography} from "@mui/material"
 import { useContext, useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import { CredInfoCtx } from "../App";
 import getCookie from "../utils/getCookie";
 
-export default function Login({nextPage = '/'}) {
+export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const signInContext = useContext(CredInfoCtx);
+  const location = useLocation();
   const navigation = useNavigate();
 
   useEffect(() => {
     if(signInContext.signedIn) {
-      navigation(nextPage);
+      console.log(location.state);
+      if(location.state) {
+        navigation(location.state);
+      } else {
+        navigation('/');
+      }
     }
   });
 

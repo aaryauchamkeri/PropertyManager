@@ -22,7 +22,6 @@ const style = {
   height: '60%',
   width: '30%',
   backgroundColor: 'white',
-  border: '2px solid #000',
   display: 'flex',
   flexDirection: 'column'
 };

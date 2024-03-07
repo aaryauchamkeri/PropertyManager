@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import style from "./viewProperty.module.css";
+import style from "./viewTenant.module.css";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { CredInfoCtx } from "../../App";
 import {Typography, Divider, Pagination, Chip, IconButton, Modal, Box} from "@mui/material";
@@ -26,9 +26,9 @@ const modalStyle = {
 };
 
 
-export default function ViewProperty() {
+export default function ViewTenant() {
     const navigator = useNavigate();
-    const [propertyData, setPropertyData] = useState({});
+    const [tenantData, setTenantData] = useState({});
     const [images, setImages] = useState([]);
     const [taskModalOpen, setTaskModalOpen] = useState(false);
     const [noteModalOpen, setNoteModalOpen] = useState(false);
@@ -46,45 +46,18 @@ export default function ViewProperty() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:3000/properties/view?propertyId=${id}`, {
-                    method: "GET",
-                    headers: { 
-                        'Authorization': `Bearer ${infoContext.userData.auth}`,
-                        'accountId': 1
-                    }
-        }).then(res => {
-            res.json().then(jsonData => {
-                setPropertyData(jsonData);
-            }).catch(err => {
-                navigator('/properties');
-            });
-        }).catch(err => {
-            navigator('/properties');
-        });
-        
-        fetch(`http://localhost:3000/properties/media?propertyId=${id}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${infoContext.userData.auth}`,
-                        'accountId': 1
-                    }
-        }).then(res => {
-            res.json().then(jsonData => {
-                const imageLinks = jsonData.map(element => {
-                    const id = element.id;
-                    const fileExtension = element.mime.split('/')[1];
-                    const fileName = id + '.' + fileExtension;
-                    return fileName;
-                });
-                setImages(imageLinks);
-            }).catch(err => {
-                navigator('/properties');
-            })
-        }).catch(err => {
-            navigator('/properties');
-        });
+        fetch(`http://localhost:3000/tenants/view?tenantId=${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${infoContext.userData.auth}`,
+                'accountId': 1
+            }
+        }).then(res => res.json()).then((data) => {
+            setTenantData(data)
+            console.log(data);
+        })
 
-        fetch(`http://localhost:3000/properties/tasks/${id}`, {
+        fetch(`http://localhost:3000/tenants/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -97,7 +70,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`http://localhost:3000/properties/notes/${id}`, {
+        fetch(`http://localhost:3000/tenants/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -113,14 +86,14 @@ export default function ViewProperty() {
 
     return (
         <>
-            <TaskModal open={taskModalOpen} setOpen={setTaskModalOpen} propertyId={id}/>
-            <NoteModal open={noteModalOpen} setOpen={setNoteModalOpen} propertyId={id}/>
+            <TaskModal open={taskModalOpen} setOpen={setTaskModalOpen} tenantId={id}/>
+            <NoteModal open={noteModalOpen} setOpen={setNoteModalOpen} tenantId={id}/>
             <div className={style.parent}>
                 <div className={style.propertyInformationSideBar}>
                     <Typography variant='h4' color={'rgb(120, 120, 120)'}
                         fontWeight={100}
                     >
-                        {propertyData.address}
+                        {tenantData.first_name}
                     </Typography>
                     <div className = {style.imageContainer}>
                         <img src = {`http://localhost:3000/media/${images[photoNumber]}`}/>
@@ -135,84 +108,40 @@ export default function ViewProperty() {
                     <div style={{marginTop: '1em'}} className={style.sideBarPropertyInfo}>
                         <div className={style.sideBarItem}>
                             <Typography variant="subtitle2">
-                                Address
+                                First Name
                             </Typography>
                             <Typography variant="subtitle2">
-                                {propertyData['address']}
+                                {tenantData['first_name']}
                             </Typography>
                         </div>
                         <Divider></Divider>
                         <div className={style.sideBarItem}>
                             <Typography variant="subtitle2">
-                                Purchase Price
+                                Last Name
                             </Typography>
                             <Typography variant="subtitle2">
-                                {propertyData['purchase_price']}
+                                {tenantData['last_name']}
                             </Typography>
                         </div>
                         <Divider></Divider>
                         <div className={style.sideBarItem}>
                             <Typography variant="subtitle2">
-                                Currency
+                                Email
                             </Typography>
                             <Typography variant="subtitle2">
-                                {propertyData['currency_type']}
+                                {tenantData['email']}
                             </Typography>
                         </div>
                         <Divider></Divider>
                         <div className={style.sideBarItem}>
                             <Typography variant="subtitle2">
-                                Maintenance
+                                Phone number
                             </Typography>
                             <Typography variant="subtitle2">
-                                {propertyData['maintenance_costs']}
+                                {tenantData['phone_number']}
                             </Typography>
                         </div>
                         <Divider></Divider>
-                        <div className={style.sideBarItem}>
-                            <Typography variant="subtitle2">
-                                Housing Company
-                            </Typography>
-                            <Typography variant="subtitle2">
-                                {propertyData['housing_company_name']}
-                            </Typography>
-                        </div>
-                        <Divider></Divider>
-                        <div className={style.sideBarItem}>
-                            <Typography variant="subtitle2">
-                                Housing Company Email
-                            </Typography>
-                            <Typography variant="subtitle2">
-                                {propertyData['housing_company_email']}
-                            </Typography>
-                        </div>
-                        <Divider></Divider>
-                        <div className={style.sideBarItem}>
-                            <Typography variant="subtitle2">
-                                Housing Company Phone
-                            </Typography>
-                            <Typography variant="subtitle2">
-                                {propertyData['housing_company_number']}
-                            </Typography>
-                        </div>
-                        <Divider></Divider>
-                        <div className={style.sideBarItem}>
-                            <Typography variant="subtitle2">
-                                Janitor Email
-                            </Typography>
-                            <Typography variant="subtitle2">
-                                {propertyData['janitor_email']}
-                            </Typography>
-                        </div>
-                        <Divider></Divider>
-                        <div className={style.sideBarItem}>
-                            <Typography variant="subtitle2">
-                                Janitor Phone
-                            </Typography>
-                            <Typography variant="subtitle2">
-                                {propertyData['janitor_number']}
-                            </Typography>
-                        </div>
                     </div>
                 </div>
                 <div className={style.informationContainer}>

@@ -134,11 +134,11 @@ export default class PropertyService {
 
     async saveImages(photos: any, propertyId: string): Promise<boolean> {
         try {
+            let noerr = true;
+            this.checkAccountPropertyPermission(propertyId);
             photos.forEach(async (image: any) => {
                 let fileId: string = randomUUID();
-                const type = image.mimetype.split()[1];
                 const buffer = image.buffer;
-                const name = image.originalname;
                 await remDbConDynamic('files').insert({
                     id: fileId,
                     file: buffer,
@@ -149,11 +149,11 @@ export default class PropertyService {
                 }).then(res => {
                     console.log(res);
                 }).catch(err => {
-                    throw new Error(`Error saving images to database`);
+                    noerr = false;
                 });
             });
             
-            return true;
+            return noerr;
             // remDbConDynamic('files').insert( )
         } catch(err) {
             console.log(err);
@@ -183,6 +183,7 @@ export default class PropertyService {
 
     async addNote(propertyId: string, note: string, author: string, created: Date): Promise<boolean> {
         try {
+            this.checkAccountPropertyPermission(propertyId);
             let res = await remDbConDynamic('property_notes').insert({
                 note: note,
                 propertyId: propertyId,
@@ -197,7 +198,7 @@ export default class PropertyService {
 
     async addTask(propertyId: string, task: string, deadline: Date, author: string, calendar: boolean): Promise<boolean> {
         try {
-
+            this.checkAccountPropertyPermission(propertyId);
             let res = await remDbConDynamic('property_tasks').insert({
                 task: task,
                 deadline: deadline,
@@ -208,7 +209,6 @@ export default class PropertyService {
             if(calendar) {
                 await new EventService(Number(this.accountId)).addEvent(deadline, task, '');
             }
-
             return true;
         } catch(err) {
             return false;
@@ -217,6 +217,7 @@ export default class PropertyService {
 
     async getNotes(propertyId: string) {
         try {
+            this.checkAccountPropertyPermission(propertyId);
             const notes = await remDbConDynamic('property_notes').select('*').where({
                 propertyId: propertyId
             });
@@ -230,11 +231,56 @@ export default class PropertyService {
 
     async getTasks(propertyId: string) {
         try {
-            const tasks = await remDbConDynamic('property_tasks').select('*').where({
+            this.checkAccountPropertyPermission(propertyId);
+            const tasks = await remDbConDynamic('property_tasks')
+            .select(['property_tasks.deadline', 'property_tasks.task', 'users.first_name', 
+                     'users.last_name', 'users.username'])
+            .where({
                 propertyId: propertyId
-            });
+            }).innerJoin(
+                'users',
+                'property_tasks.userId',
+                '=',
+                'users.id'
+            );
             return tasks;
         } catch(err) {
+            console.log(err);
+            return false;
+        }
+    }
+
+    async getAllNotes() {
+        try {
+            const notes = await remDbConDynamic('property_tasks').select('*')
+            .innerJoin(
+                'properties',
+                'propert_tasks.propertyId',
+                '=',
+                'properties.id'
+            ).where({
+                accountId: this.accountId
+            });
+            return notes;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+    }
+
+    async getAllTasks() {
+        try {
+            const notes = await remDbConDynamic('property_notes').select('*')
+            .innerJoin(
+                'properties',
+                'property_notes.propertyId',
+                '=',
+                'properties.id'
+            ).where({
+                accountId: this.accountId
+            });
+            return notes;
+        } catch (err) {
             console.log(err);
             return false;
         }

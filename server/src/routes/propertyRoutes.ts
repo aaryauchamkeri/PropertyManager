@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import authorizeToken from '../middleware/authentication/jwtMiddleware.js';
-import { addImages, addNote, addProperty, addTask, deleteProperty, getNotes, getProperties, getTasks, updateProperty, viewImages, viewProperty, viewTenants } from '../controllers/property/propertyControllers.js';
+import { addImages, addNote, addProperty, addTask, deleteProperty, getAllNotes, getAllTasks, getNotes, getProperties, getTasks, updateProperty, viewFiles, viewImages, viewProperty, viewTenants } from '../controllers/property/propertyControllers.js';
 import { checkAccountAccess } from '../middleware/property/verifyAccess.js';
 import { propertyErr } from '../controllers/property/property.err.js';
 import multer from 'multer';
@@ -20,6 +20,7 @@ const fileUpload = multer({storage: storage});
 
 router.post('/add', addProperty);
 router.get('/media', viewImages);
+router.get('/files', viewFiles);
 router.post('/images', fileUpload.array('files'), addImages);
 router.post('/update', updateProperty);
 router.post('/delete/:propertyId', deleteProperty);
@@ -30,6 +31,8 @@ router.post('/addnote/:propertyId', addNote);
 router.post('/addtask/:propertyId', addTask);
 router.get('/notes/:propertyId', getNotes);
 router.get('/tasks/:propertyId', getTasks);
+router.get('/allnotes', getAllNotes);
+router.get('/alltasks', getAllTasks);
 
 router.use(propertyErr);
 

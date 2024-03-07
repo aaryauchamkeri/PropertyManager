@@ -98,7 +98,6 @@ export default function Properties() {
 
     return (
         <div className={styles.main}>
-            <Typography variant='h6' sx={{marginBottom: '0.5em'}}>Properties</Typography>
             <div className={styles.tableContainer}>
                 <div className={styles.utilityContainer}>
                     <TextField id="outlined-basic" label="Search" size="small" fullWidth
@@ -154,8 +153,7 @@ export default function Properties() {
                             {
                                 properties.map((val, index) => {
                                     return (
-                                        <TableRow sx={{backgroundColor: 
-                                                index%2 == 0 ? 'white': 'rgb(245, 245, 245)'}}>
+                                        <TableRow sx={{backgroundColor: 'white'}}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{val.address}</TableCell>
                                             <TableCell>{val.purchase_price || 'N/A'}</TableCell>
@@ -168,27 +166,27 @@ export default function Properties() {
                                             </TableCell>
                                             <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
                                                             paddingBottom: rowCellStyle.paddingBottom}}>
-                                            <Link to={`/properties/${val.id}`}>
+                                                <Link to={`/properties/${val.id}`}>
+                                                    <IconButton onClick={() => {}}>
+                                                        <VisibilityIcon sx = 
+                                                            {{
+                                                                color: 'rgb(82, 191, 235)',
+                                                            }}/>
+                                                    </IconButton>
+                                                </Link>
                                                 <IconButton onClick={() => {}}>
-                                                    <VisibilityIcon sx = 
+                                                    <ModeEditIcon sx = 
                                                         {{
-                                                            color: 'rgb(82, 191, 235)',
+                                                            color: 'rgb(82, 235, 130)',
                                                         }}/>
                                                 </IconButton>
-                                            </Link>
-                                            <IconButton onClick={() => {}}>
-                                                <ModeEditIcon sx = 
-                                                    {{
-                                                        color: 'rgb(82, 235, 130)',
-                                                    }}/>
-                                            </IconButton>
-                                            <IconButton onClick={() => {deleteProperty(val.id, index)}}>
-                                                <DeleteIcon sx = 
-                                                    {{
-                                                        color: 'red',
-                                                    }}/>
-                                            </IconButton>
-                                        </TableCell>
+                                                <IconButton onClick={() => {deleteProperty(val.id, index)}}>
+                                                    <DeleteIcon sx = 
+                                                        {{
+                                                            color: 'red',
+                                                        }}/>
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     )
                                 })

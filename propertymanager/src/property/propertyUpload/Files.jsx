@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import styles from './images.module.css';
+import styles from './files.module.css';
 import {IconButton} from '@mui/material';
 import {Typography} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-export default function Images({images, setImages}) {
+export default function Files({images, setImages}) {
     const [imageNames, setImageNames] = useState([]);
 
     function allowDrop(ev) {
@@ -26,14 +26,16 @@ export default function Images({images, setImages}) {
 
     function drop(ev) {
         const file = ev.dataTransfer.files[0];
-        const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
-        if (allowedFileTypes.includes(file.type)) {
-            let url = URL.createObjectURL(file);
-            images.push(file);
-            setImages(images);
-            setImageNames([...imageNames, file.name]);
-            ev.preventDefault();
-        }
+        // const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
+        // if (allowedFileTypes.includes(file.type)) {
+            
+        // }
+
+        let url = URL.createObjectURL(file);
+        images.push(file);
+        setImages(images);
+        setImageNames([...imageNames, file.name]);
+        ev.preventDefault();
     }
 
 

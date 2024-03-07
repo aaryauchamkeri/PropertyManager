@@ -20,8 +20,8 @@ let refresh = async (req: RequestWithId, res: Response, next: any) => {
         if(validToken) {
             jwt.verify(refreshToken.toString(), refreshSecret, async (err, decoded: any) => {
                 const userId = decoded.id;
-                const userService = new UserService(userId);
-                const userData = await userService.getUserData();
+                const userService = new UserService();
+                const userData = await userService.getUserData(userId);
                 const accounts = await getAssociatedAccounts(userId);
                 delete userData.password;
                 delete userData.id;

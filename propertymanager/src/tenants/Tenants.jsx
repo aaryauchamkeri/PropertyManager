@@ -2,7 +2,7 @@ import styles from './tenants.module.css';
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import {Button, TextField} from '@mui/material';
-import {Outlet} from 'react-router-dom';
+import {Outlet, Link} from 'react-router-dom';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {TableContainer, Table, TableHead, TableRow, TableCell, TablePagination,
         TableBody, Modal, Box, Divider, Avatar, InputAdornment} from '@mui/material';
@@ -14,11 +14,10 @@ import EmailIcon from '@mui/icons-material/Email';
 import UploadIcon from '@mui/icons-material/Upload';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CredInfoCtx } from '../App';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
@@ -40,7 +39,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: '30%',
   backgroundColor: 'white',
-  border: '2px solid #000',
   display: 'flex',
   flexDirection: 'column',
   padding: '1em',
@@ -51,6 +49,12 @@ export default function Tenants() {
     const location = useLocation();
     const [tenants, setTenants] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [leaseStart, setLeaseStart] = useState('');
+    const [leaseEnd, setLeaseEnd] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const infoContext = useContext(CredInfoCtx);
     const navigator = useNavigate();
 
@@ -69,7 +73,7 @@ export default function Tenants() {
     }, [])
 
     // check children paths
-    if(location.pathname.endsWith('/add')) {
+    if(!location.pathname.endsWith('/tenants')) {
         return (
             <>
                 <Outlet/>
@@ -77,8 +81,34 @@ export default function Tenants() {
         )
     }
 
-    function handleAddTenantClick(e) {
-        navigator('/tenants/add');
+    async function addTenant() {
+        try {
+            let res = await fetch('http://localhost:3000/tenants/add', {
+                method: 'POST',
+                headers: {
+                    'accountId': 1,
+                    'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    phone_number: phone
+                })
+            });
+
+            console.log(await res.json());
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPhone('');
+            setLeaseStart(new Date());
+            setLeaseEnd(new Date());
+            setModalOpen(false);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
@@ -95,16 +125,24 @@ export default function Tenants() {
                     <Divider/>
                     <Box sx={{display: 'flex', flexDirection: 'row', padding: '0.5em', gap: '1em'}}>
                         <Avatar sx={{height: '3em', width: '3em', backgroundColor: 'red'}}>Hp</Avatar>
-                        <TextField label='First Name'></TextField>
-                        <TextField label='Last Name'></TextField>
+                        <TextField label='First Name'
+                            value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                        ></TextField>
+                        <TextField label='Last Name'
+                            value={lastName} onChange={(e) => setLastName(e.target.value)}
+                        ></TextField>
                     </Box>
                     <Button variant='contained'>
                         <UploadIcon/> Upload Tenant Contract
                     </Button>
                     <Box sx={{display: 'flex', flexDirection: 'row', padding: '0.5em', gap: '1em'}}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker value={dayjs(new Date())} label='Lease Start'/>
-                            <DatePicker value={dayjs(new Date())} label='Lease End'/>
+                            <DatePicker value={dayjs(leaseStart)} label='Lease Start'
+                                    onChange={(e) => {setLeaseStart(e)}}
+                            />
+                            <DatePicker value={dayjs(leaseEnd)} label='Lease End'
+                                    onChange={(e) => {setLeaseEnd(e)}}
+                            />
                         </LocalizationProvider>
                     </Box>
                     <Box sx={{width: '100%'}}>
@@ -112,6 +150,7 @@ export default function Tenants() {
                             InputProps={{startAdornment: <InputAdornment>
                                                             <EmailIcon/>
                                                          </InputAdornment>}}
+                            value={email} onChange={(e) => setEmail(e.target.value)}
                         >
                         </TextField>
                     </Box>
@@ -120,16 +159,18 @@ export default function Tenants() {
                             InputProps={{startAdornment: <InputAdornment>
                                                             <LocalPhoneIcon/>
                                                          </InputAdornment>}}
+                            value={phone} onChange={(e) => setPhone(e.target.value)}
                         >
                         </TextField>
                     </Box>
-                    <Button variant='contained' sx={{width: '3em', alignSelf: 'center'}}>
+                    <Button variant='contained' sx={{width: '3em', alignSelf: 'center'}}
+                        onClick={addTenant}
+                    >
                         Finish
                     </Button>
                 </Box>
             </Modal>
             <div className={styles.main}>
-                <Typography variant='h6' sx={{marginBottom: '0.5em'}}>Tenants</Typography>
                 <div className={styles.tableContainer}>
                     <div className={styles.utilityContainer}>
                         <TextField id="outlined-basic" label="Search" size="small" fullWidth
@@ -143,41 +184,35 @@ export default function Tenants() {
                     <TableContainer>
                         <Table style={{tableLayout: 'fixed'}}>
                             <TableHead>
-                                <TableRow sx={{backgroundColor: 'rgb(20, 20, 20)',
-                                        color: 'white'}}>
+                                <TableRow>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
+                                                        fontWeight: '600'}}>
                                         First Name
                                     </TableCell>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
+                                                        fontWeight: '600'}}>
                                         Last Name
                                     </TableCell>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
-                                        Monthly Rent
+                                                        fontWeight: '600'}}>
+                                        Lease
                                     </TableCell>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
-                                        Lease Start
+                                                        fontWeight: '600'}}>
+                                        Email
                                     </TableCell>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
-                                        Lease End
+                                                        fontWeight: '600'}}>
+                                        Phone
                                     </TableCell>
                                     <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                         paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
-                                        Property Id
-                                    </TableCell>
-                                    <TableCell sx={{paddingTop: headCellStyle.paddingTop,
-                                                        paddingBottom: headCellStyle.paddingBottom,
-                                                        color: 'white'}}>
+                                                        fontWeight: '600'}}>
                                         Actions
                                     </TableCell>
                                 </TableRow>
@@ -196,7 +231,39 @@ export default function Tenants() {
                                                     {val.last_name}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {val.monthly_rent || 'N/A'}
+                                                    {val.monthly_rent || 
+                                                    <div style={{color: 'red', padding: '0.3em'}}>
+                                                        INACTIVE
+                                                    </div>}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {val.email}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {val.phone_number}
+                                                </TableCell>
+                                                <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
+                                                            paddingBottom: rowCellStyle.paddingBottom}}>
+                                                    <Link to={`/tenants/${val.id}`}>
+                                                        <IconButton onClick={() => {}}>
+                                                            <VisibilityIcon sx = 
+                                                                {{
+                                                                    color: 'rgb(82, 191, 235)',
+                                                                }}/>
+                                                        </IconButton>
+                                                    </Link>
+                                                    <IconButton onClick={() => {}}>
+                                                        <ModeEditIcon sx = 
+                                                            {{
+                                                                color: 'rgb(82, 235, 130)',
+                                                            }}/>
+                                                    </IconButton>
+                                                    <IconButton onClick={() => {deleteProperty(val.id, index)}}>
+                                                        <DeleteIcon sx = 
+                                                            {{
+                                                                color: 'red',
+                                                            }}/>
+                                                    </IconButton>
                                                 </TableCell>
                                             </TableRow>
                                         )

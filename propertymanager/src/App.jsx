@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     if(!signedIn && location.pathname !== '/login') {
-      navigation('/login');
+      navigation('/login', {state: location.pathname});
     }
   });
 

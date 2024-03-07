@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {Step, StepLabel, Stepper, Button} from '@mui/material';
 import Info from "./Info";
 import Tenants from "./Tenants";
-import Images from "./Images";
+import Files from "./Files";
 import { CredInfoCtx } from "../../App";
 
 export default function PropertyUpload(/*{name='', address='', pPrice='', maintenanceCosts}*/) {
@@ -42,7 +42,7 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
             case 1: 
                 return <Tenants/>
             case 2: 
-                return <Images images={images} setImages={setImages}/>
+                return <Files images={images} setImages={setImages}/>
         }
     }
 

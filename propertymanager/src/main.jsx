@@ -15,10 +15,16 @@ import Invoice from './log/Invoice.jsx';
 import ViewProperty from './property/propertyView/ViewProperty.jsx';
 import Log from './log/Log.jsx';
 import TenantUpload from './tenants/tenantUpload/TenantUpload.jsx';
+import ViewTenant from './tenants/tenantView/ViewTenant.jsx';
 
 let propertyViewLoader = (req) => {
     return req.params.id;
 }
+
+let tenantViewLoader = (req) => {
+    return req.params.id;
+}
+
 
 const router = createBrowserRouter([
   {
@@ -54,6 +60,11 @@ const router = createBrowserRouter([
           {
             path: '/tenants/add',
             element: <TenantUpload/>
+          },
+          {
+            path: '/tenants/:id',
+            loader: tenantViewLoader,
+            element: <ViewTenant/>
           }
         ]
       },
