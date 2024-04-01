@@ -110,6 +110,8 @@ export default function Dashboard() {
                 }
             });
             setActiveProperties(newActiveProperties);
+        }).catch(err => {
+            console.log(err);
         });
 
         fetch('https://propertymanager.onrender.com/tenants/viewAll', {

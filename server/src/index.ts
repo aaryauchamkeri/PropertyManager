@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 // import {MongoClient} from 'mongodb';
 import { authRouter } from './routes/authRoutes.js';
@@ -13,6 +13,9 @@ import { activityRouter } from './routes/activityRoutes.js';
 
 const app = express();
 app.use(cors({origin: '*'}));
+app.use((req: Request, res: Response) => {
+    console.log('called');
+})
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 
