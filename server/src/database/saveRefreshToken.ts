@@ -1,7 +1,3 @@
-import { Collection } from "mongodb";
-import getCollection from "./getCollection.js";
-
-const refreshTokensCollection:Collection = getCollection('refreshTokens');
 let tokens = [];
 
 
