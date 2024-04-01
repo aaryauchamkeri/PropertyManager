@@ -28,7 +28,7 @@ export default function Login() {
     if(!signInContext.signedIn) {
       let refreshTkn = getCookie('refresh');
       if(refreshTkn) {
-          let response = fetch('https://propertymanager.onrender.com/token/refresh?' + new URLSearchParams(
+          let response = fetch('http://localhost:3000/token/refresh?' + new URLSearchParams(
             {
               refreshToken: refreshTkn
             }
@@ -52,7 +52,7 @@ export default function Login() {
   }, [])
   
   async function verify() {
-    let response = await fetch('https://propertymanager.onrender.com/auth/login', {
+    let response = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

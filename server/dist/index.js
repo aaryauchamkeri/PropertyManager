@@ -28,10 +28,5 @@ app.use('/schedule', scheduleRouter);
 app.use('/media', cdnRouter);
 app.use('/users', userRouter);
 app.use('/activity', activityRouter);
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
 app.listen(3000, '0.0.0.0', () => { });
 //# sourceMappingURL=index.js.map

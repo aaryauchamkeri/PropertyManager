@@ -9,23 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import getCollection from "./getCollection.js";
 const refreshTokensCollection = getCollection('refreshTokens');
+let tokens = [];
 function saveRefreshToken(tkn) {
     return __awaiter(this, void 0, void 0, function* () {
-        refreshTokensCollection.insertOne({ token: tkn });
+        tokens.push(tkn);
+        // refreshTokensCollection.insertOne({token: tkn});
     });
 }
 function hasRefreshToken(tkn) {
     return __awaiter(this, void 0, void 0, function* () {
-        const token = yield refreshTokensCollection.findOne({ token: tkn });
-        if (token) {
-            return true;
-        }
-        return false;
+        let hasToken = false;
+        tokens.forEach(token => {
+            if (token === tkn) {
+                hasToken = true;
+            }
+        });
+        return hasToken;
     });
 }
 function deleteRefreshToken(tkn) {
     return __awaiter(this, void 0, void 0, function* () {
-        refreshTokensCollection.deleteOne({ token: tkn });
+        let found = tokens.find((elem) => elem === tkn);
+        if (found) {
+            tokens = tokens.splice(found, found);
+        }
     });
 }
 export { saveRefreshToken, hasRefreshToken, deleteRefreshToken };
