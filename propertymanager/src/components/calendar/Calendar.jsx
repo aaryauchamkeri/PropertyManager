@@ -39,7 +39,7 @@ export default function Calendar() {
     useEffect(() => {
         (async () => {
             console.log(infoCtx.accountId);
-            let res = await (await fetch('https://propertymanager.onrender.com/schedule/view', {
+            let res = await (await fetch('http://localhost:3000/schedule/view', {
                 method: "GET",
                 headers: {
                     'accountId': infoCtx.accountId,
@@ -61,7 +61,7 @@ export default function Calendar() {
     }
 
     function addEvent() {
-        fetch('https://propertymanager.onrender.com/schedule/add', {
+        fetch('http://localhost:3000/schedule/add', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',

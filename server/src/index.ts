@@ -12,9 +12,10 @@ import { userRouter } from './routes/userRoutes.js';
 import { activityRouter } from './routes/activityRoutes.js';
 
 const app = express();
-app.use(cors({origin: '*'}));
-app.use((req: Request, res: Response) => {
+app.use(cors());
+app.use((req: Request, res: Response, next) => {
     console.log('called');
+    next();
 })
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));

@@ -15,12 +15,6 @@ let getAllActivity = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             .where({
             accountId: req.accountId
         });
-        activity.sort((first, second) => {
-            if (new Date(first.created).getTime() < new Date(second.created).getTime()) {
-                return 1;
-            }
-            return -1;
-        });
         res.json(activity);
     }
     catch (err) {

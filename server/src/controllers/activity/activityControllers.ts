@@ -12,13 +12,6 @@ let getAllActivity = async (req: RequestWithIdAdmin, res: Response, next) => {
         {
             accountId: req.accountId
         });
-        activity.sort((first, second) => {
-            if(new Date(first.created).getTime() < new Date(second.created).getTime()) {
-                return 1;
-            }
-
-            return -1;
-        });
         res.json(activity);
     } catch (err) {
         res.status(400).end();

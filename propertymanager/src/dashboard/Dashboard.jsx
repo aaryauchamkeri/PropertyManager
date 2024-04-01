@@ -23,7 +23,7 @@ export default function Dashboard() {
     const [activeTenants, setActiveTenants] = useState(0);
 
     useEffect(() => {
-        fetch('https://propertymanager.onrender.com/schedule/view', {
+        fetch('http://localhost:3000/schedule/view', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -44,7 +44,7 @@ export default function Dashboard() {
             setAllEvents(data);
         });
 
-        fetch('https://propertymanager.onrender.com/tenants/alltasks', {
+        fetch('http://localhost:3000/tenants/alltasks', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -64,7 +64,7 @@ export default function Dashboard() {
             setTenantTasks(data);
         });
 
-        fetch('https://propertymanager.onrender.com/activity/all', {
+        fetch('http://localhost:3000/activity/all', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -74,7 +74,7 @@ export default function Dashboard() {
             setActivity(json);
         });
 
-        fetch('https://propertymanager.onrender.com/properties/alltasks', {
+        fetch('http://localhost:3000/properties/alltasks', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -95,7 +95,7 @@ export default function Dashboard() {
             setPropertyTasks(data);
         });
 
-        fetch('https://propertymanager.onrender.com/properties/list', {
+        fetch('http://localhost:3000/properties/list', {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -114,7 +114,7 @@ export default function Dashboard() {
             console.log(err);
         });
 
-        fetch('https://propertymanager.onrender.com/tenants/viewAll', {
+        fetch('http://localhost:3000/tenants/viewAll', {
             method: "GET",
             headers: {
                 accountId: infoContext.accountId,
