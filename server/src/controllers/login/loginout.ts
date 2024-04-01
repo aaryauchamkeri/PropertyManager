@@ -4,16 +4,13 @@ import { deleteRefreshToken, saveRefreshToken } from "../../database/saveRefresh
 import { remDbCon, remDbConDynamic } from "../../database/connection.js";
 
 
-function getAssociatedAccounts(id: number) {
-    return new Promise((resolve, reject) => {
-        remDbCon.query('SELECT name, id FROM accounts INNER JOIN account_users ON accounts.id = account_users.userId WHERE userId = ?', [id], (err, results) => {
-            if(err) {
-                reject(err.message);
-            } else {
-                resolve(results);
-            }
-        }); 
-    });
+async function getAssociatedAccounts(id: number) {
+    return await remDbConDynamic('account_users')
+        .select('*')
+        .innerJoin('accounts', 'account_users.accountId', '=', 'accounts.id')
+        .where({
+            userId: id
+        });
 }
 
 let login = async (req: Request, res: Response, next: any) => {
@@ -21,7 +18,8 @@ let login = async (req: Request, res: Response, next: any) => {
     if(username && password) {
         try {
             let results = await remDbConDynamic('users').select('*').where({
-                username: username
+                username: username,
+                password: password
             });
             if(results.length >= 1) {
                 const userData = {
@@ -36,6 +34,8 @@ let login = async (req: Request, res: Response, next: any) => {
                     auth: authToken,
                     refresh: refreshToken,
                     accounts: accounts,
+                    id: results[0].id,
+                    isAdmin: results[0].isAdmin,
                     firstName: results[0].first_name,
                     lastName: results[0].last_name,
                     username: results[0].username,

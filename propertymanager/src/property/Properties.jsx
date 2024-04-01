@@ -1,7 +1,7 @@
 import styles from './properties.module.css';
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
-import {Button, TextField} from '@mui/material';
+import {Button, TextField, Box} from '@mui/material';
 import {Outlet} from 'react-router-dom';
 import {useLocation, useNavigate} from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -11,10 +11,8 @@ import {TableContainer, Table, TableHead, TableRow, TableCell, TablePagination,
 import {Link} from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import IconButton from '@mui/material/IconButton';
 
-// styles for cells
 const headCellStyle = {
     paddingTop: '0.7em',
     paddingBottom: '0.7em'
@@ -25,47 +23,44 @@ const rowCellStyle = {
     paddingBottom: '0.3em'
 }
 
+
 export default function Properties() {
     const infoContext = useContext(CredInfoCtx);
     const tableHeads = useRef(['No', 'Address', 'Purchase Price', 'Tenants', 'Status', 'Actions']);
+    const [searchBar, setSearchBar] = useState('');
     const location = useLocation();
     const navigator = useNavigate();
+    const [displayNone, setDisplayNone] = useState(true);
     const [properties, setProperties] = useState([]);
-    const [tenants, setTenants] = useState([[]]);
+    
+    const fetchPropertyData = async () => {
+        try {
+            let propertiesResponse = await fetch('http://localhost:3000/properties/list', {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    'accountId': infoContext.accountId
+                }
+            });
+            propertiesResponse = await propertiesResponse.json();
+            console.log(propertiesResponse);
+            return propertiesResponse;
+        } catch (err) {
+            return [];
+        }
+    }
 
     // for retrieving data about the properties and tenants
     useEffect(() => {
         (async () => {
             try {
-
-                // properties
-                let propertiesResponse = await fetch('http://localhost:3000/properties/list', {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${infoContext.userData.auth}`,
-                        'accountId': 1
-                    }
-                });
-                propertiesResponse = await propertiesResponse.json();
-                setProperties(propertiesResponse);
-
-                // tenants
-                let updatedTenants = [];
-                propertiesResponse.forEach(async (val, ind) => {
-                    let propertyId = val.id;
-                    let propertyTenants = await fetch(`http://localhost:3000/properties/tenants?propertyId=${propertyId}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${infoContext.userData.auth}`,
-                            'accountId': 1
-                        }
-                    });
-                    let propertyTenantsJson = await propertyTenants.json();
-                    updatedTenants[ind] = propertyTenantsJson;
-                    setTenants(updatedTenants);
-                });
+                let propertiesResponse = await fetchPropertyData();
+                if(propertiesResponse.length) {
+                    setProperties(propertiesResponse);
+                    setDisplayNone(false);
+                }
             } catch (err) {
-                console.log(err);
+
             }
         })();
     }, []);
@@ -89,19 +84,45 @@ export default function Properties() {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
-                'accountId': 1
+                'accountId': infoContext.accountId
             },
             body: JSON.stringify({'propertyId': propertyId})
+        }).then(res => {
+            window.location.reload();
         });
-        console.log(res);
     } 
+
+    async function updatePropertyStatus(value, propertyId) {
+        try {
+            let res = await fetch(`http://localhost:3000/properties/update`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    accountId: infoContext.accountId,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    propertyId: propertyId,
+                    update: {
+                        status: value
+                    }
+                })
+            });
+
+            setProperties(await fetchPropertyData())
+        } catch (err) {
+
+        }
+    }
 
     return (
         <div className={styles.main}>
             <div className={styles.tableContainer}>
                 <div className={styles.utilityContainer}>
                     <TextField id="outlined-basic" label="Search" size="small" fullWidth
-                        variant="outlined" sx = {{backgroundColor: 'white', marginRight: '1em'}} />
+                        variant="outlined" sx = {{backgroundColor: 'white', marginRight: '1em'}} 
+                        onChange={(e) => {setSearchBar(e.target.value)}} value={searchBar}
+                    />
                     <Button variant="contained" sx={{whiteSpace: 'nowrap'}}
                         onClick={handleAddPropertyClick}>
                         <AddIcon fontSize='small' sx={{marginRight: '3px'}}/>
@@ -135,11 +156,6 @@ export default function Properties() {
                                 <TableCell sx={{paddingTop: headCellStyle.paddingTop,
                                                     paddingBottom: headCellStyle.paddingBottom,
                                                     fontWeight: '600'}}>
-                                                    Tenants
-                                                </TableCell>
-                                <TableCell sx={{paddingTop: headCellStyle.paddingTop,
-                                                    paddingBottom: headCellStyle.paddingBottom,
-                                                    fontWeight: '600'}}>
                                                     Status
                                                 </TableCell>
                                 <TableCell sx={{paddingTop: headCellStyle.paddingTop,
@@ -151,18 +167,27 @@ export default function Properties() {
                         </TableHead>
                         <TableBody>
                             {
-                                properties.map((val, index) => {
+                                searchBar ? properties.filter((property) => {
+                                    return property.address.startsWith(searchBar.toLowerCase());
+                                }).map((val, index) => {
                                     return (
-                                        <TableRow sx={{backgroundColor: 'white'}}>
+                                        <TableRow sx={{backgroundColor: 'white'}} key={index}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{val.address}</TableCell>
                                             <TableCell>{val.purchase_price || 'N/A'}</TableCell>
                                             <TableCell>{val.maintenance_costs || 'N/A'}</TableCell>
-                                            <TableCell>{tenants[index] ? tenants[index].length : 0}</TableCell>
-                                            <TableCell>{tenants[index]?.length > 0 ? 
-                                                <span className="occupiedLabelStyle">Occupied</span> : 
-                                                <span className="vacantLabelStyle">Vacant</span>
-                                            }
+                                            <TableCell>
+                                                <select style={{color: val.status?'#4bcc00':'red'}}
+                                                        onChange={(e) => {updatePropertyStatus(e.target.value, val.id)}}
+                                                        value={val.status}
+                                                >
+                                                    <option value={1}>
+                                                        Occupied
+                                                    </option>
+                                                    <option value={0}>
+                                                        Vacant
+                                                    </option>
+                                                </select>
                                             </TableCell>
                                             <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
                                                             paddingBottom: rowCellStyle.paddingBottom}}>
@@ -174,12 +199,46 @@ export default function Properties() {
                                                             }}/>
                                                     </IconButton>
                                                 </Link>
-                                                <IconButton onClick={() => {}}>
-                                                    <ModeEditIcon sx = 
+                                                <IconButton onClick={() => {deleteProperty(val.id, index)}}>
+                                                    <DeleteIcon sx = 
                                                         {{
-                                                            color: 'rgb(82, 235, 130)',
+                                                            color: 'red',
                                                         }}/>
                                                 </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                }) :
+                                properties.map((val, index) => {
+                                    return (
+                                        <TableRow sx={{backgroundColor: 'white'}} key={index}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{val.address}</TableCell>
+                                            <TableCell>{val.purchase_price || 'N/A'}</TableCell>
+                                            <TableCell>{val.maintenance_costs || 'N/A'}</TableCell>
+                                            <TableCell>
+                                                <select style={{color: val.status?'#4bcc00':'red'}}
+                                                        onChange={(e) => {updatePropertyStatus(e.target.value, val.id)}}
+                                                        value={val.status}
+                                                >
+                                                    <option value={1}>
+                                                        Occupied
+                                                    </option>
+                                                    <option value={0}>
+                                                        Vacant
+                                                    </option>
+                                                </select>
+                                            </TableCell>
+                                            <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
+                                                            paddingBottom: rowCellStyle.paddingBottom}}>
+                                                <Link to={`/properties/${val.id}`}>
+                                                    <IconButton onClick={() => {}}>
+                                                        <VisibilityIcon sx = 
+                                                            {{
+                                                                color: 'rgb(82, 191, 235)',
+                                                            }}/>
+                                                    </IconButton>
+                                                </Link>
                                                 <IconButton onClick={() => {deleteProperty(val.id, index)}}>
                                                     <DeleteIcon sx = 
                                                         {{
@@ -194,6 +253,23 @@ export default function Properties() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Box sx={
+                            {
+                                height: '30em', width: '100%', display: 
+                                displayNone ? 'flex': 'none',
+                                justifyContent: 'center', alignItems: 'center',
+                                
+                            }
+                        }>
+                    <Typography variant='h4' sx={
+                        {
+                            color: 'gray',
+                            fontStyle: 'italic'
+                        }
+                    }>
+                        No Properties
+                    </Typography>            
+                </Box>
             </div>
         </div>  
     )

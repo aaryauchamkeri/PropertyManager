@@ -77,14 +77,12 @@ img {
     grid-row: 6/11;
     grid-column: 6/11;
     padding: 1em;
-    overflow-y: scroll;
 }
 
 .tasksContainer {
     padding: 1em;
     grid-row: 1/6;
     grid-column: 6/11;
-    overflow-y: scroll; 
 }
 
 .filesContainer {
@@ -104,11 +102,12 @@ img {
     flex-direction: row;
     justify-content: start;
     align-items: center;
-    height: 2.5;
+    height: 2.5em;
 }
 
 .content {
     height: calc(100% - 2.5em);
+    overflow-y: scroll;
 }
 
 

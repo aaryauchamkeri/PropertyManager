@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import style from "./viewTenant.module.css";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { CredInfoCtx } from "../../App";
-import {Typography, Divider, Pagination, Chip, IconButton, Modal, Box} from "@mui/material";
+import {Typography, Divider, IconButton, Modal, Box, Avatar} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -12,6 +12,7 @@ import Note from "./Note";
 import TaskTable from "./TaskTable";
 import TaskModal from "./TaskModal";
 import NoteModal from "./NoteModal";
+import FileModal from "./FileModal";
 
 const modalStyle = {
   position: 'absolute',
@@ -27,9 +28,10 @@ const modalStyle = {
 
 
 export default function ViewTenant() {
+    const id = useLoaderData();
     const navigator = useNavigate();
     const [tenantData, setTenantData] = useState({});
-    const [images, setImages] = useState([]);
+    const [pfp, setPfp] = useState(`http://localhost:3000/media/profilePicture?tenantId=${id}`);
     const [taskModalOpen, setTaskModalOpen] = useState(false);
     const [noteModalOpen, setNoteModalOpen] = useState(false);
     const [fileModalOpen, setFileModalOpen] = useState(false);
@@ -39,7 +41,6 @@ export default function ViewTenant() {
     const [activity, setActivity] = useState([]);
     const [photoNumber, setPhotoNumber] = useState(0);
     const infoContext = useContext(CredInfoCtx);
-    const id = useLoaderData();
 
     function paginationChange(event, value) {
         setPhotoNumber(value - 1);
@@ -50,7 +51,7 @@ export default function ViewTenant() {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
-                'accountId': 1
+                'accountId': infoContext.accountId
             }
         }).then(res => res.json()).then((data) => {
             setTenantData(data)
@@ -61,10 +62,16 @@ export default function ViewTenant() {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
-                'accountId': 1
+                'accountId': infoContext.accountId
             }
         }).then(res => {
             res.json().then(jsonData => {
+                jsonData.sort((first, second) => {
+                    if(new Date(first.deadline).getTime() < new Date(second.deadline).getTime()) {
+                        return -1;
+                    }
+                    return 1;
+                });
                 setTasks(jsonData);
                 console.log(jsonData);
             })
@@ -74,7 +81,7 @@ export default function ViewTenant() {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
-                'accountId': 1
+                'accountId': infoContext.accountId
             }
         }).then(res => {
             res.json().then(jsonData => {
@@ -82,10 +89,54 @@ export default function ViewTenant() {
                 setNotes(jsonData);
             })
         });
-    }, [])
+
+        fetch(`http://localhost:3000/tenants/files?tenantId=${id}`, {
+            method: 'GET', 
+            headers: {
+                'Authorization' : `Bearer ${infoContext.userData.auth}`,
+                'accountId': infoContext.accountId
+            }
+        }).then(res => {
+            res.json().then(jsonData => {
+                console.log(jsonData);
+                setFiles(jsonData);
+            })
+        });
+
+        fetch(`http://localhost:3000/activity/tenant?tenantId=${id}`, {
+            method: 'GET',
+            headers: {
+                'accountId': infoContext.accountId,
+                'Authorization': `Bearer ${infoContext.userData.auth}`
+            }
+        }).then(res => res.json()).then(json => {
+            json.reverse();
+            setActivity(json);
+            console.log(json);
+        }).catch(err => {
+            console.log(err);
+        })
+    }, []);
+
+    const markTaskDone = async (taskId) => {
+        if(confirm('Are you sure you would like to mark this task as done?')) {
+            try {
+                await fetch(`http://localhost:3000/tenants/completeTask?taskId=${taskId}`, {
+                    method: 'GET',
+                    headers: {
+                        'accountId': infoContext.accountId,
+                        'Authorization': `Bearer ${infoContext.userData.auth}`
+                    }
+                });
+            } catch (err) {
+    
+            }
+        }
+    }
 
     return (
         <>
+            <FileModal open={fileModalOpen} setOpen={setFileModalOpen} tenantId={id}/>
             <TaskModal open={taskModalOpen} setOpen={setTaskModalOpen} tenantId={id}/>
             <NoteModal open={noteModalOpen} setOpen={setNoteModalOpen} tenantId={id}/>
             <div className={style.parent}>
@@ -93,17 +144,22 @@ export default function ViewTenant() {
                     <Typography variant='h4' color={'rgb(120, 120, 120)'}
                         fontWeight={100}
                     >
-                        {tenantData.first_name}
+                        {tenantData.first_name + " " + tenantData.last_name}
                     </Typography>
                     <div className = {style.imageContainer}>
-                        <img src = {`http://localhost:3000/media/${images[photoNumber]}`}/>
-                        <Pagination count={images.length} sx={{marginTop: '0.5em'}}
-                            onChange={paginationChange}
+                        <Avatar src={pfp}
+                                sx={{
+                                    height: '10em',
+                                    width: '10em'
+                                }}
                         />
                     </div>
                     <div className={style.statusContainer}>
-                        <Typography variant="h6">Status: </Typography>
-                        <Chip label="Occupied" color="success" variant="filled" />
+                        <Typography variant="h6" fontWeight="bold"
+                                    sx={{color: 'gray', textDecoration: 'underline'}}
+                        > 
+                            Details: 
+                        </Typography>
                     </div>
                     <div style={{marginTop: '1em'}} className={style.sideBarPropertyInfo}>
                         <div className={style.sideBarItem}>
@@ -150,7 +206,7 @@ export default function ViewTenant() {
                             <Typography variant="h6" sx={{marginRight: '0.5em'}}>
                                 Files
                             </Typography>
-                            <IconButton>
+                            <IconButton onClick={() => {setFileModalOpen(true)}}>
                                 <AddIcon fontSize="small"/>
                             </IconButton>
                         </div>
@@ -166,24 +222,78 @@ export default function ViewTenant() {
                                         <Typography variant="h6">No Files</Typography>
                                         <FileCopyIcon fontSize="large"/>
                                         
-                                    </div> : <span></span>
+                                    </div> : files.map(file => {
+                                                return (
+                                                    <>
+                                                        <Link onClick={
+                                                            () => {
+                                                                let fileExt = file.mime.split('/')[1];
+                                                                let fileName = file.id + '.' + fileExt;
+                                                                window.open(`http://localhost:3000/media/${fileName}`, "_blank")
+                                                            }}
+                                                        >
+                                                            <Box sx={{width: '100%', display: 'flex',
+                                                                    flexDirection: 'row', justifyContent: 'space-between',
+                                                                    alignItems: 'center',
+                                                                    ":hover" :{bgcolor:'#fafafa'}
+                                                            }}>
+                                                                <Typography variant="subtitle1"
+                                                                    sx={{overflow: 'hidden',
+                                                                        textWrap: 'nowrap'
+                                                                        }}
+                                                                >
+                                                                    {file.fileName}
+                                                                </Typography>
+                                                            </Box>
+                                                            <Divider/>
+                                                        </Link>
+                                                    </>
+                                                ) 
+                                            })
                             }
                         </div>
                     </div>
                     <div className={style.activityContainer}>
-                        {
-                                    activity.length == 0 ? 
-                                    <div style={{height: '100%', display: 'flex', alignItems: 'center',
-                                                flexDirection: 'column', justifyContent: 'center',
-                                                color: 'gray',  backgroundColor: 'rgb(245, 245, 245)',
-                                                borderRadius: '0.5em'
-                                                }}>
-                                        
-                                        <Typography variant="h6">No Recent Activity</Typography>
-                                        <HistoryIcon fontSize="large"/>
-                                        
-                                    </div> : <span></span>
+                        <div className={style.containerLabel}>
+                            <HistoryIcon sx={{marginRight: '0.5em'}}/>
+                            <Typography variant="h6" sx={{marginRight: '0.5em'}}>
+                                Activity
+                            </Typography>
+                        </div>
+                        <div className={style.content}>
+                            {
+                                activity.length == 0 ? 
+                                <div style={{height: '100%', display: 'flex', alignItems: 'center',
+                                            flexDirection: 'column', justifyContent: 'center',
+                                            color: 'gray',  backgroundColor: 'rgb(245, 245, 245)',
+                                            borderRadius: '0.5em'
+                                            }}>
+                                    
+                                    <Typography variant="h6">No Recent Activity</Typography>
+                                    <HistoryIcon fontSize="large"/>
+                                    
+                                </div> : activity.map(elem => {
+                                            return (
+                                                <Box sx={{
+                                                    width: '100%', borderBottom: 'solid 1px gray',
+                                                    paddingLeft: '0.5em', display: 'flex', flexDirection: 'column'
+                                                }}> 
+                                                    <Box sx={{
+                                                        display: 'flex', justifyContent: 'space-between',
+                                                        overflowX: 'hidden'
+                                                    }}>
+                                                        <Typography variant='subtitle1' sx={{color: 'gray'}}>
+                                                            {elem.first_name + ' ' + elem.last_name + ' ' + elem.message}
+                                                        </Typography>
+                                                        <Typography variant='subtitle1' color='gray'>
+                                                            {new Date(elem.created).toDateString()}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            )
+                                        })   
                             }
+                        </div>
                     </div>
                     <div className={style.notesContainer}>
                         <div className={style.containerLabel}>
@@ -230,10 +340,9 @@ export default function ViewTenant() {
                                             color: 'gray', backgroundColor: 'rgb(245, 245, 245)',
                                             borderRadius: '0.5em'
                                             }}>
-                                    
                                     <Typography variant="h6">No Tasks</Typography>
                                     <AssignmentTurnedInIcon fontSize="large"/>
-                                </div> : <TaskTable tasks={tasks}/>
+                                </div> : <TaskTable tasks={tasks} complete={markTaskDone}/>
                             }
                         </div>
                     </div>

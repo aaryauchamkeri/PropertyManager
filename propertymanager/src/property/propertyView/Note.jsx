@@ -12,7 +12,7 @@ export default function Note({userId, note, created}) {
         fetch(`http://localhost:3000/users/user?id=${userId}`, {
             method: "GET",
             headers: {
-                accountId: 1,
+                accountId: infoContext.accountId,
                 authorization: `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => {

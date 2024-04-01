@@ -48,27 +48,47 @@ const style = {
 export default function Tenants() {
     const location = useLocation();
     const [tenants, setTenants] = useState([]);
+    const [displayNone, setDisplayNone] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [picture, setPicture] = useState();
+    const [tempPictureUrl, setTempPictureUrl] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [leaseStart, setLeaseStart] = useState('');
     const [leaseEnd, setLeaseEnd] = useState('');
+    const [rent, setRent] = useState();
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [searchBar, setSearchBar] = useState('');
     const infoContext = useContext(CredInfoCtx);
     const navigator = useNavigate();
 
+    let fetchTenantData = async () => {
+        let tenantsResponse = await fetch('http://localhost:3000/tenants/viewAll', {
+            method: "GET",
+            headers: {
+                accountId: infoContext.accountId,
+                Authorization: `Bearer ${infoContext.userData.auth}`
+            }
+        });
+
+        let tenantResponseJson = await tenantsResponse.json();
+        return tenantResponseJson;
+    }
+
     useEffect(() => {
         (async () => {
-            let tenantsResponse = await fetch('http://localhost:3000/tenants/viewAll', {
-                method: "GET",
-                headers: {
-                    accountId: 1,
-                    Authorization: `Bearer ${infoContext.userData.auth}`
+            try {
+                let tenantsResponse = await fetchTenantData();
+                if(tenantsResponse.length) {
+                    setTenants(tenantsResponse);
+                    setDisplayNone(false);
+                } else {
+                    setTenants([]);
                 }
-            });
+            } catch (err) {
 
-            setTenants(await tenantsResponse.json());
+            }
         })()
     }, [])
 
@@ -86,7 +106,7 @@ export default function Tenants() {
             let res = await fetch('http://localhost:3000/tenants/add', {
                 method: 'POST',
                 headers: {
-                    'accountId': 1,
+                    'accountId': infoContext.accountId,
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
                     'Content-Type': 'application/json'
                 },
@@ -98,7 +118,24 @@ export default function Tenants() {
                 })
             });
 
-            console.log(await res.json());
+            if (picture) {
+                const newTenantId = (await res.json()).tenantId;
+                let imageFormData = new FormData();
+                imageFormData.append('pfp', picture);
+                imageFormData.append('tenantId', newTenantId);
+    
+                await fetch('http://localhost:3000/tenants/addProfilePicture', {
+                    method: 'POST',
+                    headers: {
+                        'accountId': infoContext.accountId,
+                        'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    },
+                    body:  imageFormData
+                });
+            }
+
+            setPicture(null);
+            setTempPictureUrl(null);
             setFirstName('');
             setLastName('');
             setEmail('');
@@ -109,6 +146,58 @@ export default function Tenants() {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    async function updateTenantStatus(value, tenantId) {
+        try {
+            let res = await fetch(`http://localhost:3000/tenants/update`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    accountId: infoContext.accountId,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tenantId: tenantId,
+                    update: {
+                        status: value
+                    }
+                })
+            });
+
+            setTenants(await fetchTenantData());
+        } catch (err) {
+            
+        }
+    }
+
+    async function deleteTenant(tenantId, ind) {
+        if(confirm('Are you sure you would like to delete this tenant? This action can\'t be undone.'))
+        try {
+            let res = await fetch(`http://localhost:3000/tenants/delete/${tenantId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${infoContext.userData.auth}`,
+                    'accountId': infoContext.accountId
+                }
+            }).then(res => {
+                window.location.reload();
+            });
+        } catch (err) {
+
+        }
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+    
+    function drop(ev) {
+        const file = ev.dataTransfer.files[0];
+        let url = URL.createObjectURL(file);
+        setPicture(file);
+        setTempPictureUrl(url);
+        ev.preventDefault();
     }
 
     return (
@@ -123,12 +212,20 @@ export default function Tenants() {
                         </IconButton>
                     </div>
                     <Divider/>
-                    <Box sx={{display: 'flex', flexDirection: 'row', padding: '0.5em', gap: '1em'}}>
-                        <Avatar sx={{height: '3em', width: '3em', backgroundColor: 'red'}}>Hp</Avatar>
-                        <TextField label='First Name'
+                    <div style={{alignSelf: 'center'}} onDrop={(ev) => drop(ev)}
+                        onDragOver={(ev) => {
+                            allowDrop(ev);
+                        }}>
+                        <Avatar sx={{alignSelf: 'center', width: '5em', height: '5em'}}
+                            src={tempPictureUrl ? tempPictureUrl : null}
+                        />
+
+                    </div>
+                    <Box sx={{display: 'flex', flexDirection: 'row', padding: '0.5em', gap: '1em', justifyContent: 'center'}}>
+                        <TextField label='First Name' sx={{width: '50%'}}
                             value={firstName} onChange={(e) => setFirstName(e.target.value)}
                         ></TextField>
-                        <TextField label='Last Name'
+                        <TextField label='Last Name' sx={{width: '50%'}}
                             value={lastName} onChange={(e) => setLastName(e.target.value)}
                         ></TextField>
                     </Box>
@@ -144,6 +241,13 @@ export default function Tenants() {
                                     onChange={(e) => {setLeaseEnd(e)}}
                             />
                         </LocalizationProvider>
+                    </Box>
+                    <Box sx={{width: '100%'}}>
+                        <TextField label='Monthly Rent' sx={{width: '100%'}}
+                            inputProps={{type: 'number'}}
+                            value={rent} onChange={(e) => {setRent(e.target.value)}}
+                        >
+                        </TextField>
                     </Box>
                     <Box sx={{width: '100%'}}>
                         <TextField label='Email Address' sx={{width: '100%'}}
@@ -174,7 +278,10 @@ export default function Tenants() {
                 <div className={styles.tableContainer}>
                     <div className={styles.utilityContainer}>
                         <TextField id="outlined-basic" label="Search" size="small" fullWidth
-                            variant="outlined" sx = {{backgroundColor: 'white', marginRight: '1em'}} />
+                            variant="outlined" sx = {{backgroundColor: 'white', marginRight: '1em'}} 
+                            onChange={(e) => {setSearchBar(e.target.value)}} 
+                            value={searchBar}
+                        />
                         <Button variant="contained" sx={{whiteSpace: 'nowrap'}}
                             onClick={() => setModalOpen(true)}>
                             <AddIcon fontSize='small' sx={{marginRight: '3px'}}/>
@@ -219,11 +326,12 @@ export default function Tenants() {
                             </TableHead>
                             <TableBody>
                                 {
-                                    tenants.map((val, ind) => {
+                                    searchBar ? tenants.filter((tenant) => {
+                                        return tenant.first_name.toLowerCase().startsWith(searchBar.toLowerCase()) 
+                                        || tenant.last_name.toLowerCase().startsWith(searchBar.toLowerCase())
+                                    }).map((val, ind) => {
                                         return (
-                                            <TableRow sx={{backgroundColor: 
-                                                    ind % 2 == 0 ? 'white': 'rgb(245, 245, 245)'}
-                                            }>
+                                            <TableRow sx={{backgroundColor: 'white'}}>
                                                 <TableCell>
                                                     {val.first_name}
                                                 </TableCell>
@@ -231,10 +339,17 @@ export default function Tenants() {
                                                     {val.last_name}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {val.monthly_rent || 
-                                                    <div style={{color: 'red', padding: '0.3em'}}>
-                                                        INACTIVE
-                                                    </div>}
+                                                    <select style={{color: val.status?'#4bcc00':'red'}}
+                                                        onChange={(e) => {updateTenantStatus(e.target.value, val.id)}}
+                                                        value={val.status}
+                                                    >
+                                                        <option value={1}>
+                                                            ACTIVE
+                                                        </option>
+                                                        <option value={0}>
+                                                            INACTIVE
+                                                        </option>
+                                                    </select>
                                                 </TableCell>
                                                 <TableCell>
                                                     {val.email}
@@ -252,13 +367,61 @@ export default function Tenants() {
                                                                 }}/>
                                                         </IconButton>
                                                     </Link>
-                                                    <IconButton onClick={() => {}}>
+                                                    {/* <IconButton onClick={() => {modifyTenant(val)}}>
                                                         <ModeEditIcon sx = 
                                                             {{
                                                                 color: 'rgb(82, 235, 130)',
                                                             }}/>
+                                                    </IconButton> */}
+                                                    <IconButton onClick={() => {deleteTenant(val.id, ind)}}>
+                                                        <DeleteIcon sx = 
+                                                            {{
+                                                                color: 'red',
+                                                            }}/>
                                                     </IconButton>
-                                                    <IconButton onClick={() => {deleteProperty(val.id, index)}}>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    }) :
+                                    tenants.map((val, ind) => {
+                                        return (
+                                            <TableRow sx={{backgroundColor: 'white'}}>
+                                                <TableCell>
+                                                    {val.first_name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {val.last_name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <select style={{color: val.status?'#4bcc00':'red'}}
+                                                        onChange={(e) => {updateTenantStatus(e.target.value, val.id)}}
+                                                        value={val.status}
+                                                    >
+                                                        <option value={1}>
+                                                            ACTIVE
+                                                        </option>
+                                                        <option value={0}>
+                                                            INACTIVE
+                                                        </option>
+                                                    </select>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {val.email}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {val.phone_number}
+                                                </TableCell>
+                                                <TableCell sx={{paddingTop: rowCellStyle.paddingTop,
+                                                            paddingBottom: rowCellStyle.paddingBottom}}>
+                                                    <Link to={`/tenants/${val.id}`}>
+                                                        <IconButton onClick={() => {}}>
+                                                            <VisibilityIcon sx = 
+                                                                {{
+                                                                    color: 'rgb(82, 191, 235)',
+                                                                }}/>
+                                                        </IconButton>
+                                                    </Link>
+                                                    <IconButton onClick={() => {deleteTenant(val.id, ind)}}>
                                                         <DeleteIcon sx = 
                                                             {{
                                                                 color: 'red',
@@ -272,6 +435,23 @@ export default function Tenants() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={
+                                {
+                                    height: '30em', width: '100%', display: 
+                                    displayNone ? 'flex': 'none',
+                                    justifyContent: 'center', alignItems: 'center',
+                                    
+                                }
+                            }>
+                        <Typography variant='h4' sx={
+                            {
+                                color: 'gray',
+                                fontStyle: 'italic'
+                            }
+                        }>
+                            No Tenants
+                        </Typography>            
+                    </Box>
                 </div>
             </div>  
         </>

@@ -4,10 +4,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import CheckIcon from '@mui/icons-material/Check';
 import {Avatar, Tooltip, Skeleton, Button, Modal, Box, IconButton} from '@mui/material';
 import React from 'react';
 
-export default function TaskTable({tasks}) {
+export default function TaskTable({tasks, complete}) {
     function getRandomColor() {
         let red = Math.floor(Math.random() * 255);
         let green = Math.floor(Math.random() * 255);
@@ -56,14 +57,37 @@ export default function TaskTable({tasks}) {
                                         {elem.task}
                                     </TableCell>
                                     <TableCell>
-                                        <Button>
-                                            <Tooltip title={'overdue'}>
-                                                <Skeleton variant='circular' width={'1em'} height={'1em'}
-                                                        sx={{color: 'red', bgcolor: 'red',
-                                                            position: 'relative'}}
-                                                />
-                                            </Tooltip> 
-                                        </Button>
+                                        {
+                                            elem.completed ? (
+                                                <Button disabled>
+                                                    <CheckIcon sx={{color: 'green'}}/>
+                                                </Button>
+                                            ) :
+                                            new Date(elem.deadline).getTime() < new Date().getTime() ?
+                                                <Button onClick={() => {complete(elem.id)}}>
+                                                    <Tooltip title={
+                                                        'overdue'}>
+                                                        <Skeleton variant='circular' width={'1em'} height={'1em'}
+                                                                sx={{
+                                                                        color: 'red', 
+                                                                        bgcolor: 'red',
+                                                                        position: 'relative'
+                                                                    }}
+                                                        />
+                                                    </Tooltip> 
+                                                </Button>:
+                                                <Button onClick={() => {complete(elem.id)}}>
+                                                    <Tooltip title={
+                                                        'upcoming'}>
+                                                        <Skeleton variant='circular' width={'1em'} height={'1em'}
+                                                                sx={{ 
+                                                                        bgcolor: '#cad108',
+                                                                        position: 'relative'
+                                                                    }}
+                                                        />
+                                                    </Tooltip> 
+                                                </Button>
+                                        }
                                     </TableCell>
                                     <TableCell>
                                         {new Date(elem.deadline).toDateString()}

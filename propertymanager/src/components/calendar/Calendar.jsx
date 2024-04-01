@@ -1,5 +1,5 @@
 import styles from './calendar.module.css';
-import {Modal, Typography, IconButton, TextField, Button} from '@mui/material';
+import {Modal, Typography, IconButton, TextField, Button, Tooltip} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullCalendar from '@fullcalendar/react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -12,6 +12,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { useContext, useEffect, useState } from 'react';
 import { CredInfoCtx } from '../../App';
 import dayjs from 'dayjs';
+import CustomEvent from './CustomEvent';
 
 
 const style = {
@@ -37,14 +38,16 @@ export default function Calendar() {
 
     useEffect(() => {
         (async () => {
+            console.log(infoCtx.accountId);
             let res = await (await fetch('http://localhost:3000/schedule/view', {
                 method: "GET",
                 headers: {
-                    'accountId': 1,
+                    'accountId': infoCtx.accountId,
                     'Authorization': `Bearer ${infoCtx.userData.auth}`
                 }
             })).json();
             setEvents(res);
+            console.log(res);
         })()
     }, []);
 
@@ -63,7 +66,7 @@ export default function Calendar() {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${infoCtx.userData.auth}`,
-                'accountId': 1
+                'accountId': infoCtx.accountId
             }, 
             body: JSON.stringify({
                 title: title,
@@ -125,6 +128,9 @@ export default function Calendar() {
                     </div>
                 </div>
             </Modal>
+            <Tooltip title='Delete'>
+
+            </Tooltip>
             <FullCalendar
                 plugins={[ dayGridPlugin,
                            timeGridPlugin,
@@ -134,12 +140,14 @@ export default function Calendar() {
                     left: 'prev next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    }}
+                }}
+                eventContent={CustomEvent}
                 events={
                     events.map(value => {
                         return {
                             title: value.title,
-                            start: new Date(value.date)
+                            start: new Date(value.date),
+                            extendedProps: { description: value.description }
                         }
                     })
                 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DrawerListComponent from './DrawerListComponent';
-// import NestedParentDrawerListComponent from './NestedParentDrawerListComponent.jsx';
+import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
 import styles from './drawer.module.css';
 import Typography from '@mui/material/Typography';
@@ -13,30 +13,41 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import HistoryIcon from '@mui/icons-material/History';
 
 
-export default function Drawer({selected, setSelected}) {
-    const [displayProperties, setDisplayProperties] = useState(true);
-    const [age, setAge] = useState('');
+export default function Drawer({selected, setSelected, setOpen, userData, accountId, setAccountId}) {
+    const [options, setOptions] = useState([]);
 
-    const handleChange = (event) => {
-        setAge(event.target.value);
-    };    
+    console.log(userData);
+    
 
     return (
         <div className={styles.parent}>
             <div className={styles.close}>
-                <select value={1} style={{color: 'white', backgroundColor: 'rgb(25, 25, 25)'}}>
-                    <option value={1}>Workspace 1</option>
-                    <option value={1}>Workspace 2</option>
-                    <option value={1}>Workspace 3</option>
-                </select>
+                <div style={{width: '100%'}}>
+                    <select value={accountId} 
+                        style={
+                            {
+                                color: 'white',
+                                backgroundColor: 'rgb(25, 25, 25)',
+                                textOverflow: 'ellipsis',
+                                width: '100%'
+                            }
+                        } 
+                        onChange={(e) => {setAccountId(e.target.value)}}
+                    >
+                        {
+                            userData.accounts ? userData.accounts.map((elem) => {
+                                return (
+                                    <option value={elem.id}>
+                                        {elem.name}
+                                    </option>
+                                )
+                            }) : []
+                        }
+                    </select>
+                </div>
             </div>
             <div className={styles.main}>
                 <List sx={{padding: '0.5em'}}>
-                    {/* <NestedParentDrawerListComponent label="Hello"/>
-                    <div style={{paddingLeft: '0.7em'}}>
-                        
-
-                    </div> */}
                     <DrawerListComponent selected={selected === 0} setSelected={setSelected}
                             label="Dashboard" link="/" ind={0}
                             icon={<DashboardIcon fontSize='small' sx={{color: 'white'}}/>}/>
@@ -50,14 +61,14 @@ export default function Drawer({selected, setSelected}) {
                         label="Calendar" link = "/calendar" ind={3}
                         icon={<CalendarMonthIcon sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 4} setSelected={setSelected}
-                        label="Templates" link="/propertyUpload" ind={4}
+                        label="Templates" link="/templates" ind={4}
                         icon={<DescriptionIcon sx={{color: 'white'}}/>}/>
                     <DrawerListComponent selected={selected === 5} setSelected={setSelected}
-                        label="Log" link="/log" ind={5}
-                        icon={<HistoryIcon sx={{color: 'white'}}/>}/>
+                        label="Account" link="/account" ind={5}
+                        icon={<PeopleIcon sx={{color: 'white'}}/>}/>
                 </List>
             </div>
-            <div className={styles.account}>
+            <div className={styles.account} onClick={() => {setOpen(true)}}>
                 <SettingsIcon/>
                 <Typography variant="subtitle1">Settings</Typography>
             </div>

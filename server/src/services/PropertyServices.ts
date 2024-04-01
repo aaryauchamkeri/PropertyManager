@@ -67,45 +67,49 @@ export default class PropertyService {
     async deleteProperty(propertyId: string): Promise<boolean> {
         let permission = await this.checkAccountPropertyPermission(propertyId);
         if(permission) {
-            // Work on removing associated files
-            if(await this.removeAssociatedTenants(propertyId) && 
-               await this.removeAssociatedFiles(propertyId)) {
-                await remDbConDynamic('properties').delete()
+            this.removeAssociatedNotesTasksLeasesActivity(propertyId).then(res => {
+                remDbConDynamic('properties').delete()
                     .where({
-                        id: propertyId,
+                        id: propertyId
+                    }).catch(err => {
+                        console.log(err);
                     });
-                return true;
-            } else {
-                return false;
-            }
+            });
+            return true;
         } else {
             return false;
         }
     }
 
-    async removeAssociatedTenants(propertyId: string): Promise<boolean> {
+    async removeAssociatedNotesTasksLeasesActivity(propertyId: string): Promise<boolean> {
         try {
-            let res = await remDbConDynamic('tenants').update({
-                propertyId: null
-            }).where({
-                propertyId: propertyId
-            });
+            await remDbConDynamic('property_notes').delete()
+                .where({
+                    propertyId: propertyId
+                });
+            await remDbConDynamic('property_tasks').delete()
+                .where({
+                    propertyId: propertyId
+                });
+            await remDbConDynamic('leases').delete()
+                .where({
+                    propertyId: propertyId
+                });
+            await remDbConDynamic('activity').delete()
+                .where({
+                    propertyId: propertyId
+                });
+            await remDbConDynamic('files').delete()
+                .where({
+                    propertyId: propertyId
+                });
             return true;
         } catch (err) {
+            console.log(err);
             return false;
         }
     }
 
-    async removeAssociatedFiles(propertyid: string): Promise<boolean> {
-        try {
-            let res = await remDbConDynamic('files').delete().where({
-                propertyId: propertyid
-            });
-            return true;
-        } catch(err) {
-            return false;
-        }
-    }
 
     async getProperties(): Promise<any> {
         let propertiesWithTenants = [];
@@ -132,18 +136,18 @@ export default class PropertyService {
         return results;
     }
 
-    async saveImages(photos: any, propertyId: string): Promise<boolean> {
+    async saveFiles(files: any, propertyId: string): Promise<boolean> {
         try {
             let noerr = true;
             this.checkAccountPropertyPermission(propertyId);
-            photos.forEach(async (image: any) => {
+            files.forEach(async (file: any) => {
                 let fileId: string = randomUUID();
-                const buffer = image.buffer;
+                const buffer = file.buffer;
                 await remDbConDynamic('files').insert({
                     id: fileId,
                     file: buffer,
-                    fileName: image.originalname,
-                    mime: image.mimetype,
+                    fileName: file.originalname,
+                    mime: file.mimetype,
                     propertyId: propertyId,
                     accountId: this.accountId
                 }).then(res => {
@@ -154,7 +158,6 @@ export default class PropertyService {
             });
             
             return noerr;
-            // remDbConDynamic('files').insert( )
         } catch(err) {
             console.log(err);
             return false;
@@ -165,11 +168,11 @@ export default class PropertyService {
         this.checkAccountPropertyPermission(propertyId);
         let files;
         if(!images) {
-            files = await remDbConDynamic('files').select('id', 'mime').where({
+            files = await remDbConDynamic('files').select('id', 'mime', 'fileName').where({
                 propertyId: propertyId
             });
         } else {
-            files = await remDbConDynamic('files').select('id', 'mime').where({
+            files = await remDbConDynamic('files').select('id', 'mime', 'fileName').where({
                 propertyId: propertyId,
                 mime: 'image/png'
             }).orWhere({
@@ -229,12 +232,20 @@ export default class PropertyService {
         }
     }
 
+    async completeTask(taskId: string) {
+        await remDbConDynamic('property_tasks').update({
+            completed: true
+        }).where({
+            id: taskId
+        });
+        return true;
+    }
+
     async getTasks(propertyId: string) {
         try {
             this.checkAccountPropertyPermission(propertyId);
             const tasks = await remDbConDynamic('property_tasks')
-            .select(['property_tasks.deadline', 'property_tasks.task', 'users.first_name', 
-                     'users.last_name', 'users.username'])
+            .select(['property_tasks.*', 'users.first_name', 'users.last_name', 'users.username'])
             .where({
                 propertyId: propertyId
             }).innerJoin(
@@ -252,10 +263,10 @@ export default class PropertyService {
 
     async getAllNotes() {
         try {
-            const notes = await remDbConDynamic('property_tasks').select('*')
+            const notes = await remDbConDynamic('property_tasks').select('property_tasks.*', 'properties.id', 'properties.accountId')
             .innerJoin(
                 'properties',
-                'propert_tasks.propertyId',
+                'property_tasks.propertyId',
                 '=',
                 'properties.id'
             ).where({
@@ -270,15 +281,17 @@ export default class PropertyService {
 
     async getAllTasks() {
         try {
-            const notes = await remDbConDynamic('property_notes').select('*')
+            const notes = await remDbConDynamic('property_tasks').select('*')
             .innerJoin(
                 'properties',
-                'property_notes.propertyId',
+                'property_tasks.propertyId',
                 '=',
                 'properties.id'
             ).where({
                 accountId: this.accountId
             });
+            console.log('called');
+            console.log(notes);
             return notes;
         } catch (err) {
             console.log(err);

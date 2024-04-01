@@ -1,17 +1,7 @@
 import { Request, Response } from "express";
 import { remDbConDynamic } from "../../database/connection.js";
-
-
-// function getMime(extension: string): string {
-//     switch(extension) {
-//         case 'html': return 'text/html';
-//         case 'css': return 'text/css';
-//         case 'jpeg' || 'jpg': return 'image/jpeg';
-//         case 'png': return 'image/png';
-//         case 'txt': return 'text/plain';
-//         default: throw new Error('Invalid mime type');
-//     }
-// }
+import { RequestWithIdAdmin } from "../../middleware/property/verifyAccess.js";
+import { randomUUID } from "crypto";
 
 let getFile = async (req: Request, res: Response, next) => {
     const fileName = req.params.name;
@@ -30,6 +20,39 @@ let getFile = async (req: Request, res: Response, next) => {
     }
 }
 
+let getTemplates = async (req: RequestWithIdAdmin, res: Response) => {
+    const accountId = req.accountId;
+    try {
+        let files = await remDbConDynamic('files').select('id', 'fileName', 'mime')
+            .where({
+                accountId: accountId,
+                isTemplate: true
+            });
+        res.json(files);
+    } catch (err) {
+        res.status(400).end();
+    }
+}
+
+let uploadTemplate = async (req: RequestWithIdAdmin, res: Response) => {
+    const accountId = req.accountId;
+    try {
+        let templateToAdd = req.file;
+        let fileId: string = randomUUID();
+        let status = await remDbConDynamic('files').insert({
+            id: fileId,
+            file: templateToAdd.buffer,
+            fileName: templateToAdd.originalname,
+            mime: templateToAdd.mimetype,
+            accountId: accountId,
+            isTemplate: true
+        });
+        res.json(status);
+    } catch (err) {
+        res.status(400).end();
+    }
+}
+
 let getFileErr = async(err: Error, req: Request, res: Response, next) => {
     if(res.headersSent) next();
     else {
@@ -37,4 +60,4 @@ let getFileErr = async(err: Error, req: Request, res: Response, next) => {
     }
 }
 
-export {getFile, getFileErr};
+export {getFile, getTemplates, uploadTemplate, getFileErr};

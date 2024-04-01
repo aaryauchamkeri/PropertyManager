@@ -22,7 +22,7 @@ export default function NoteModal({open, setOpen, propertyId}) {
             await fetch(`http://localhost:3000/properties/addnote/${propertyId}`, {
                 method: 'POST',
                 headers: {
-                    'accountId': 1,
+                    'accountId': infoContext.accountId,
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
                     'Content-Type': 'application/json'
                 },

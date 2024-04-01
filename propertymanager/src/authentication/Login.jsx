@@ -39,6 +39,7 @@ export default function Login() {
             let data = await res.json();
             signInContext.setSignedIn(true);
             signInContext.setUserData({...data});
+            signInContext.setAccountId(data.accounts[0].id);
             navigation(nextPage);
           }).catch(err => {
             console.log(err);

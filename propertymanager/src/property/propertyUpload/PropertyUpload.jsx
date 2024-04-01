@@ -1,10 +1,8 @@
 import { useContext, useState } from "react";
 import styles from "./propertyUpload.module.css"
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {Step, StepLabel, Stepper, Button} from '@mui/material';
 import Info from "./Info";
-import Tenants from "./Tenants";
 import Files from "./Files";
 import { CredInfoCtx } from "../../App";
 
@@ -40,8 +38,6 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
                             jEmail = {jEmail} setJEmail = {setJEmail}
                         />
             case 1: 
-                return <Tenants/>
-            case 2: 
                 return <Files images={images} setImages={setImages}/>
         }
     }
@@ -54,7 +50,7 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
             } else {
                 setActiveStep(activeStep + 1);
             }
-        } else if (activeStep === 2) {
+        } else if (activeStep === 1) {
             await sendProperty();
             navigator('/properties');
         } else {
@@ -67,7 +63,7 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
             let res = await fetch('http://localhost:3000/properties/add', {
                 method: "POST",
                 headers: {
-                    'accountId': 1,
+                    'accountId': credCtx.accountId,
                     'Authorization': `Bearer ${credCtx.userData.auth}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -89,14 +85,16 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
                 form.append('files', image);
             })
 
-            let imageRes = await fetch('http://localhost:3000/properties/images', {
+            let imageRes = await fetch('http://localhost:3000/properties/addFiles', {
                 method: 'POST',
                 headers: {
-                    'accountId': 1,
+                    'accountId': credCtx.accountId,
                     'Authorization': `Bearer ${credCtx.userData.auth}`
                 }, 
                 body: form
             });
+
+            console.log(imageRes);
         } catch(err) {
             console.log(err);
         }
@@ -105,15 +103,10 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
     return (
         <div className={styles.main}>
             <div className={styles.stepperContainer}>
-                <Stepper activeStep={activeStep} sx={{width: '100%'}}>
+                <Stepper activeStep={activeStep} sx={{width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
                     <Step>
                         <StepLabel>
                             Enter Basic Information
-                        </StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>
-                            Add Tenants
                         </StepLabel>
                     </Step>
                     <Step>

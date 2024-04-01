@@ -14,8 +14,9 @@ import Tenants from './tenants/Tenants.jsx';
 import Invoice from './log/Invoice.jsx';
 import ViewProperty from './property/propertyView/ViewProperty.jsx';
 import Log from './log/Log.jsx';
-import TenantUpload from './tenants/tenantUpload/TenantUpload.jsx';
 import ViewTenant from './tenants/tenantView/ViewTenant.jsx';
+import Account from './account/Account.jsx';
+import Templates from './templates/Templates.jsx';
 
 let propertyViewLoader = (req) => {
     return req.params.id;
@@ -24,7 +25,6 @@ let propertyViewLoader = (req) => {
 let tenantViewLoader = (req) => {
     return req.params.id;
 }
-
 
 const router = createBrowserRouter([
   {
@@ -58,10 +58,6 @@ const router = createBrowserRouter([
         element: <Tenants/>,
         children: [
           {
-            path: '/tenants/add',
-            element: <TenantUpload/>
-          },
-          {
             path: '/tenants/:id',
             loader: tenantViewLoader,
             element: <ViewTenant/>
@@ -73,18 +69,26 @@ const router = createBrowserRouter([
         element: <Calendar/>
       },
       {
+        path: '/templates',
+        element: <Templates/>
+      },
+      {
         element: <Login/>,
         path: '/login'
       },
+      // {
+      //   path: '/log',
+      //   element: <Log/>,
+      //   children: [
+      //     {
+      //       path: '/log/invoice',
+      //       element: <Invoice/>
+      //     }
+      //   ]
+      // },
       {
-        path: '/log',
-        element: <Log/>,
-        children: [
-          {
-            path: '/log/invoice',
-            element: <Invoice/>
-          }
-        ]
+        path: '/account',
+        element: <Account/>
       }
     ]
   },

@@ -37,18 +37,7 @@ let viewEvents = async (req: RequestWithIdAdmin, res: Response, next) => {
     }
 }
 
-let test = async (req: Request, res: Response, next) => {
-    try {
-        await sendMail({from: 'aaryachamkeri2006@gmail.com', to: 'chamkeriaarya@gmail.com',
-                        subject: 'Test Mail', text: 'This is a Test mail'});
-        res.status(200).end();
-    } catch(err) {
-        console.log(err);
-        res.status(400).end();
-    }
-    
-}
 
 
 
-export {addEvent, viewEvents, test};
+export {addEvent, viewEvents};

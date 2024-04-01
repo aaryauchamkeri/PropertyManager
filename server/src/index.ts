@@ -2,13 +2,14 @@ import express from 'express';
 import cors from 'cors';
 // import {MongoClient} from 'mongodb';
 import { authRouter } from './routes/authRoutes.js';
-import { infoRouter } from './routes/test.js';
+import { infoRouter } from './routes/infoRouter.js';
 import { refreshRouter } from './routes/tokenRefreshRoute.js';
 import { propertyRouter } from './routes/propertyRoutes.js';
 import { tenantRouter } from './routes/tenantRoutes.js';
 import { scheduleRouter } from './routes/scheduleRoutes.js';
 import { cdnRouter } from './routes/cdnRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
+import { activityRouter } from './routes/activityRoutes.js';
 
 const app = express();
 app.use(cors());
@@ -23,5 +24,5 @@ app.use('/tenants', tenantRouter);
 app.use('/schedule', scheduleRouter);
 app.use('/media', cdnRouter);
 app.use('/users', userRouter);
-
+app.use('/activity', activityRouter);
 app.listen(3000, '0.0.0.0', () => {});

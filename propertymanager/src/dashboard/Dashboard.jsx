@@ -1,28 +1,39 @@
 import styles from './dashboard.module.css';
-import {Box, Typography} from '@mui/material'
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import {Box, Typography, Button, ButtonGroup, Chip, Divider} from '@mui/material';
 import { CredInfoCtx } from '../App';
 import { useContext, useEffect, useState } from 'react';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TasksWidget from './TasksWidget';
+import EventsWidget from './EventsWidget';
+import { PieChart } from '@mui/x-charts/PieChart';
+import Status from './Status';
+import Activity from './Activity';
 
 
 export default function Dashboard() {
     const infoContext = useContext(CredInfoCtx);
     const [allEvents, setAllEvents] = useState([]);
+    const [tenantTasks, setTenantTasks] = useState([]);
+    const [activity, setActivity] = useState([]);
+    const [propertyTasks, setPropertyTasks] = useState([]);
+    const [totalProperties, setTotalProperties] = useState(0);
+    const [activeProperties, setActiveProperties] = useState(0);
+    const [totalTenants, setTotalTenants] = useState(0);
+    const [activeTenants, setActiveTenants] = useState(0);
 
     useEffect(() => {
         fetch('http://localhost:3000/schedule/view', {
             method: 'GET',
             headers: {
-                'accountId': 1,
+                'accountId': infoContext.accountId,
                 'Authorization': `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => res.json()).then((data) => {
-            data = data.map(elem => {
-                if(new Date(elem.date).getTime() > new Date().getTime()) return elem;
+            console.log(data);
+            data = data.filter((elem) => {
+                return elem !== undefined && elem !== null && new Date(elem.date).getTime() > new Date().getTime();
             });
-            data = data.filter();
             data.sort(function (a, b) {
                 let aDate = new Date(a.date);
                 let bDate = new Date(b.date);
@@ -33,104 +44,102 @@ export default function Dashboard() {
             setAllEvents(data);
         });
 
-        fetch('http://localhost:3000/tenants/tasks/alltasks', {
+        fetch('http://localhost:3000/tenants/alltasks', {
             method: 'GET',
             headers: {
-                'accountId': 1,
+                'accountId': infoContext.accountId,
                 'Authorization': `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => res.json()).then(data => {
-            console.log(data);
+            data = data.filter(data => {
+                let currentDate = new Date();
+                return new Date(data.deadline).getTime() > currentDate.getTime();
+            });
+            data.sort((first, second) => {
+                if(new Date(first.deadline).getTime() < new Date(second.deadline).getTime()) {
+                    return -1;
+                }
+                return 1;
+            });
+            setTenantTasks(data);
         });
 
-        fetch('http://localhost:3000/properties/tasks/alltasks', {
+        fetch('http://localhost:3000/activity/all', {
             method: 'GET',
             headers: {
-                'accountId': 1,
+                'accountId': infoContext.accountId,
+                'Authorization': `Bearer ${infoContext.userData.auth}`
+            }
+        }).then(res => res.json()).then(json => {
+            setActivity(json);
+        });
+
+        fetch('http://localhost:3000/properties/alltasks', {
+            method: 'GET',
+            headers: {
+                'accountId': infoContext.accountId,
                 'Authorization': `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => res.json()).then(data => {
-            console.log(data);
+            data = data.filter(data => {
+                let currentDate = new Date();
+                return new Date(data.deadline).getTime() > currentDate.getTime();
+            });
+
+            data.sort((first, second) => {
+                if(new Date(first.deadline).getTime() < new Date(second.deadline).getTime()) {
+                    return -1;
+                }
+                return 1;
+            });
+            setPropertyTasks(data);
         });
+
+        fetch('http://localhost:3000/properties/list', {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${infoContext.userData.auth}`,
+                'accountId': infoContext.accountId
+            }
+        }).then(res => res.json()).then(data => {
+            setTotalProperties(data.length);
+            let newActiveProperties = 0;
+            data.forEach(element => {
+                if(element.status) {
+                    newActiveProperties++;
+                }
+            });
+            setActiveProperties(newActiveProperties);
+        });
+
+        fetch('http://localhost:3000/tenants/viewAll', {
+            method: "GET",
+            headers: {
+                accountId: infoContext.accountId,
+                Authorization: `Bearer ${infoContext.userData.auth}`
+            }
+        }).then(res => res.json()).then(data => {
+            setTotalTenants(data.length);
+            let newActiveTenants = 0;
+            data.forEach(element => {
+                if(element.status) {
+                    newActiveTenants++;
+                }
+            });
+            setActiveTenants(newActiveTenants);
+        });
+
     }, []);
 
 
     return (
         <div className={styles.parent}>
-            <div className={styles.calendar}>
-                <Box sx={{flex: 1, display: 'flex', flexDirection: 'column', padding: '1em'}}>
-                    <Typography variant="h4" sx={{textDecoration: 'underline', 
-                                                  textDecorationColor: 'blue',
-                                                  fontStyle: 'italic', flex: 0.1}}>
-                        Upcoming Events
-                    </Typography>
-                    <Box sx={{flex: 1, display: 'flex', flexDirection: 'column', gap: '1em',
-                              overflow: 'scroll', padding: '1em 0 0 0'}}>
-                        {
-                            allEvents.length ? allEvents.map(elem => {
-                                return (
-                                    <Box sx={{
-                                        width: '100%', height: '4em', borderRadius: '0.3em',
-                                        borderLeft: 'solid 5px rgb(61, 171, 255)', paddingLeft: '0.5em',
-                                        display: 'flex', flexDirection: 'column'
-                                    }}> 
-                                        <Box sx={{
-                                            display: 'flex', justifyContent: 'space-between',
-                                            overflowX: 'hidden'
-                                        }}>
-                                            <Typography variant='h6'>
-                                                {elem.title}
-                                            </Typography>
-                                            <Typography variant='subtitle1' color='gray'>
-                                                {new Date(elem.date).toDateString()}
-                                            </Typography>
-                                        </Box>
-                                        <Typography variant='subtitle1' color='gray'>
-                                            {elem.description ||  "No description provided"}
-                                        </Typography>
-                                    </Box>
-                                )
-                            }) : <Box sx={{
-                                    width: '100%', height: '100%', display: 'flex',
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Typography variant='h5' color='gray' sx={{
-                                        alignSelf: 'center', position: 'relative',
-                                        left: '-0.5em', fontStyle: 'italic'
-                                    }}>
-                                        No upcoming events
-                                    </Typography>
-                                 </Box>
-                        }
-                    </Box>
-                </Box>
-            </div>
-            <div className={styles.tasks}>
-                <Box sx={{
-                    width: '50%', height: '100', display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: '1em', padding: '1em', borderRight: 'solid 0.5px gray'
-                }}>
-                    <Typography variant='h4' sx={{
-                        textDecoration: 'underline', textDecorationColor: 'blue',
-                        fontStyle: 'italic'
-                    }}>
-                        Upcoming Tenant Tasks
-                    </Typography>
-                    
-                </Box>
-                <Box sx={{
-                    width: '50%', height: '100', display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: '1em', padding: '1em', borderLeft: 'solid 0.5px gray'
-                }}>
-                    <Typography variant='h4' sx={{
-                        textDecoration: 'underline', textDecorationColor: 'blue',
-                        fontStyle: 'italic'
-                    }}>
-                        Upcoming Property Tasks
-                    </Typography>
-
-                </Box>
-            </div>
+            <EventsWidget allEvents={allEvents}/>
+            <TasksWidget propertyTasks={propertyTasks} tenantTasks={tenantTasks}/>
+            <Status totalProperties={totalProperties} activeProperties={activeProperties}
+                    totalTenants={totalTenants} activeTenants={activeTenants}
+            />
+            <Activity activity={activity}/>
         </div>
     ); 
 }

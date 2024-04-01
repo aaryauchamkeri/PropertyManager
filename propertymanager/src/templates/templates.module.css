@@ -1,0 +1,28 @@
+.main {
+    width: 100%;
+    min-height: 100%;
+    background-color: rgb(243, 243, 243);
+    overflow-y: scroll;
+}
+
+.usersContainer {
+    width: 100%;
+    display: flex; 
+    flex-wrap: wrap;
+}
+
+.item {
+    display: inline-block;
+    min-width: 12em;
+    width: calc(100%/8);
+    aspect-ratio : 1 / 1;
+    padding: 0.5em;
+    overflow: hidden;
+}
+
+.descriptionItem {
+    /* display: inline; */
+    display: inline-flex;
+    flex-direction: column;
+    width: 50%;
+}

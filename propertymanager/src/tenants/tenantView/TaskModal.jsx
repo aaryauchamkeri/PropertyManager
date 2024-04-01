@@ -29,7 +29,7 @@ export default function TaskModal({open, setOpen, tenantId}) {
             await fetch(`http://localhost:3000/tenants/addtask/${tenantId}`, {
                 method: 'POST',
                 headers: {
-                    'accountId': 1,
+                    'accountId': infoContext.accountId,
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
                     'Content-Type': 'application/json'
                 },

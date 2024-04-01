@@ -8,10 +8,6 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 export default function Files({images, setImages}) {
     const [imageNames, setImageNames] = useState([]);
 
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-
     function deleteImg(ind) {
         if(ind == 0) {
             imageNames.shift();
@@ -24,12 +20,12 @@ export default function Files({images, setImages}) {
         setImages([...images]);
     }
 
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+    
     function drop(ev) {
         const file = ev.dataTransfer.files[0];
-        // const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
-        // if (allowedFileTypes.includes(file.type)) {
-            
-        // }
 
         let url = URL.createObjectURL(file);
         images.push(file);
