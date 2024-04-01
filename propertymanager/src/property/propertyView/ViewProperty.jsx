@@ -48,7 +48,7 @@ export default function ViewProperty() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:30000/properties/view?propertyId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/properties/view?propertyId=${id}`, {
                     method: "GET",
                     headers: { 
                         'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -64,7 +64,7 @@ export default function ViewProperty() {
             navigator('/properties');
         });
         
-        fetch(`http://localhost:30000/properties/media?propertyId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/properties/media?propertyId=${id}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -86,7 +86,7 @@ export default function ViewProperty() {
             navigator('/properties');
         });
 
-        fetch(`http://localhost:30000/properties/tasks/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/properties/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -105,7 +105,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`http://localhost:30000/properties/files?propertyId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/properties/files?propertyId=${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -118,7 +118,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`http://localhost:30000/properties/notes/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/properties/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -131,7 +131,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`http://localhost:30000/activity/property?propertyId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/activity/property?propertyId=${id}`, {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -149,7 +149,7 @@ export default function ViewProperty() {
     const markTaskDone = async (taskId) => {
         if(confirm('Are you sure you would like to mark this task as done?')) {
             try {
-                await fetch(`http://localhost:30000/properties/completeTask?taskId=${taskId}`, {
+                await fetch(`https://propertymanager.onrender.com0/properties/completeTask?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'accountId': infoContext.accountId,
@@ -175,7 +175,7 @@ export default function ViewProperty() {
                         {propertyData.address}
                     </Typography>
                     <div className = {style.imageContainer}>
-                        <img src = {`http://localhost:3000/media/${images[photoNumber]}`}/>
+                        <img src = {`https://propertymanager.onrender.com/media/${images[photoNumber]}`}/>
                     </div>
                     <Pagination count={images.length} sx={{marginTop: '0.5em'}}
                         onChange={paginationChange}
@@ -298,7 +298,7 @@ export default function ViewProperty() {
                                                             () => {
                                                                 let fileExt = file.mime.split('/')[1];
                                                                 let fileName = file.id + '.' + fileExt;
-                                                                window.open(`http://localhost:3000/media/${fileName}`, "_blank")
+                                                                window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
                                                             }}
                                                         >
                                                             <Box sx={{width: '100%', display: 'flex',

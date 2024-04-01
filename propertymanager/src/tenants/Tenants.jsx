@@ -64,7 +64,7 @@ export default function Tenants() {
     const navigator = useNavigate();
 
     let fetchTenantData = async () => {
-        let tenantsResponse = await fetch('http://localhost:3000/tenants/viewAll', {
+        let tenantsResponse = await fetch('https://propertymanager.onrender.com/tenants/viewAll', {
             method: "GET",
             headers: {
                 accountId: infoContext.accountId,
@@ -103,7 +103,7 @@ export default function Tenants() {
 
     async function addTenant() {
         try {
-            let res = await fetch('http://localhost:3000/tenants/add', {
+            let res = await fetch('https://propertymanager.onrender.com/tenants/add', {
                 method: 'POST',
                 headers: {
                     'accountId': infoContext.accountId,
@@ -124,7 +124,7 @@ export default function Tenants() {
                 imageFormData.append('pfp', picture);
                 imageFormData.append('tenantId', newTenantId);
     
-                await fetch('http://localhost:3000/tenants/addProfilePicture', {
+                await fetch('https://propertymanager.onrender.com/tenants/addProfilePicture', {
                     method: 'POST',
                     headers: {
                         'accountId': infoContext.accountId,
@@ -150,7 +150,7 @@ export default function Tenants() {
 
     async function updateTenantStatus(value, tenantId) {
         try {
-            let res = await fetch(`http://localhost:30000/tenants/update`, {
+            let res = await fetch(`https://propertymanager.onrender.com0/tenants/update`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -174,7 +174,7 @@ export default function Tenants() {
     async function deleteTenant(tenantId, ind) {
         if(confirm('Are you sure you would like to delete this tenant? This action can\'t be undone.'))
         try {
-            let res = await fetch(`http://localhost:30000/tenants/delete/${tenantId}`, {
+            let res = await fetch(`https://propertymanager.onrender.com0/tenants/delete/${tenantId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,

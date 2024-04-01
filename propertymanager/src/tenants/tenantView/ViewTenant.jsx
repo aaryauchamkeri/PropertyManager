@@ -31,7 +31,7 @@ export default function ViewTenant() {
     const id = useLoaderData();
     const navigator = useNavigate();
     const [tenantData, setTenantData] = useState({});
-    const [pfp, setPfp] = useState(`http://localhost:3000/media/profilePicture?tenantId=${id}`);
+    const [pfp, setPfp] = useState(`https://propertymanager.onrender.com/media/profilePicture?tenantId=${id}`);
     const [taskModalOpen, setTaskModalOpen] = useState(false);
     const [noteModalOpen, setNoteModalOpen] = useState(false);
     const [fileModalOpen, setFileModalOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function ViewTenant() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:30000/tenants/view?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/view?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -58,7 +58,7 @@ export default function ViewTenant() {
             console.log(data);
         })
 
-        fetch(`http://localhost:30000/tenants/tasks/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -77,7 +77,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:30000/tenants/notes/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -90,7 +90,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:30000/tenants/files?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/files?tenantId=${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -103,7 +103,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:30000/activity/tenant?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/activity/tenant?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -121,7 +121,7 @@ export default function ViewTenant() {
     const markTaskDone = async (taskId) => {
         if(confirm('Are you sure you would like to mark this task as done?')) {
             try {
-                await fetch(`http://localhost:30000/tenants/completeTask?taskId=${taskId}`, {
+                await fetch(`https://propertymanager.onrender.com0/tenants/completeTask?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'accountId': infoContext.accountId,
@@ -229,7 +229,7 @@ export default function ViewTenant() {
                                                             () => {
                                                                 let fileExt = file.mime.split('/')[1];
                                                                 let fileName = file.id + '.' + fileExt;
-                                                                window.open(`http://localhost:3000/media/${fileName}`, "_blank")
+                                                                window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
                                                             }}
                                                         >
                                                             <Box sx={{width: '100%', display: 'flex',

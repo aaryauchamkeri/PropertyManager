@@ -28,7 +28,7 @@ export default function Login() {
     if(!signInContext.signedIn) {
       let refreshTkn = getCookie('refresh');
       if(refreshTkn) {
-          let response = fetch('http://localhost:3000/token/refresh?' + new URLSearchParams(
+          let response = fetch('https://propertymanager.onrender.com/token/refresh?' + new URLSearchParams(
             {
               refreshToken: refreshTkn
             }
@@ -37,11 +37,12 @@ export default function Login() {
           });
           response.then(async (res) => {
             if(res.status === 200) {
-              let data = await res.json();
-              signInContext.setSignedIn(true);
-              signInContext.setUserData({...data});
-              signInContext.setAccountId(data.accounts[0].id);
-              navigation(nextPage);
+              res.json().then(data => {
+                signInContext.setSignedIn(true);
+                signInContext.setUserData({...data});
+                signInContext.setAccountId(data.accounts[0].id);
+                navigation(nextPage);
+              })
             }
           }).catch(err => {
             console.log(err);
@@ -51,7 +52,7 @@ export default function Login() {
   }, [])
   
   async function verify() {
-    let response = await fetch('http://localhost:3000/auth/login', {
+    let response = await fetch('https://propertymanager.onrender.com/auth/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -60,11 +61,17 @@ export default function Login() {
       body: JSON.stringify({"username": username, "password": password})
     });
     if(response.status === 200) {
-      let data = await response.json();
-      document.cookie = `refresh=${data.refresh}`;
-      signInContext.setSignedIn(true);
-      signInContext.setUserData({...data});
-      navigation(nextPage);
+      response.json().then(data => {
+        let now = new Date();
+        let time = now.getTime();
+        let expireTime = time + 1000*36000;
+        now.setTime(expireTime);
+        document.cookie = `refresh=${data.refresh};expires=${now.toUTCString()};path=/`;
+        signInContext.setSignedIn(true);
+        signInContext.setUserData({...data});
+        signInContext.setAccountId(data.accounts[0].id);
+        navigation(nextPage);
+      })
     }
   }
 
