@@ -12,7 +12,7 @@ export default function Account() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(function() {
-        fetch('http://localhost:3000/users/all', {
+        fetch('https://propertymanager.onrender.com/users/all', {
             method: 'GET',
             headers: {
                 accountId: infoContext.accountId,
@@ -32,7 +32,7 @@ export default function Account() {
     async function deleteUser(id) {
         let verify = confirm('Are you sure you would like to delete this user?');
         if(verify) {
-            await fetch(`http://localhost:3000/users/remove?userId=${id}`, {
+            await fetch(`https://propertymanager.onrender.com0/users/remove?userId=${id}`, {
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
                     'accountId': infoContext.accountId

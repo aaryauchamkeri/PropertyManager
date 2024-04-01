@@ -47,7 +47,7 @@ export default function ViewTenant() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:3000/tenants/view?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/view?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -58,7 +58,7 @@ export default function ViewTenant() {
             console.log(data);
         })
 
-        fetch(`http://localhost:3000/tenants/tasks/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -77,7 +77,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:3000/tenants/notes/${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -90,7 +90,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:3000/tenants/files?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/tenants/files?tenantId=${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -103,7 +103,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`http://localhost:3000/activity/tenant?tenantId=${id}`, {
+        fetch(`https://propertymanager.onrender.com0/activity/tenant?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -121,7 +121,7 @@ export default function ViewTenant() {
     const markTaskDone = async (taskId) => {
         if(confirm('Are you sure you would like to mark this task as done?')) {
             try {
-                await fetch(`http://localhost:3000/tenants/completeTask?taskId=${taskId}`, {
+                await fetch(`https://propertymanager.onrender.com0/tenants/completeTask?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'accountId': infoContext.accountId,

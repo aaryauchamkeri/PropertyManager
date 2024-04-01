@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
-const uri = 'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1';
+const uri = 'mongodb+srv://aaryachamkeri06:3billionmrr@portfoliopms.9ix6mey.mongodb.net/?retryWrites=true&w=majority&appName=PortfolioPMS';
 const client = new MongoClient(uri);
-const db = client.db("RealEstateManager");
+const db = client.db("portfoliopms");
 const getCollection = (name) => {
     const collection = db.collection(name);
     return collection;
