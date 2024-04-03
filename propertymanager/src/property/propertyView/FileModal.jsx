@@ -34,7 +34,7 @@ export default function FileModal({open, setOpen, propertyId}) {
             let formData = new FormData();
             formData.append('propertyId', propertyId);
             formData.append('files', file);
-            let res = await fetch('http://localhost:3000/properties/addFiles', {
+            let res = await fetch('https://propertymanager.onrender.com/properties/addFiles', {
                 method: 'POST',
                 headers: {
                     accountId: infoContext.accountId,

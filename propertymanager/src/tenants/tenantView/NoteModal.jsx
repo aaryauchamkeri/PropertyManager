@@ -19,7 +19,7 @@ export default function NoteModal({open, setOpen, tenantId}) {
     
     async function addNote() {
         try {
-            await fetch(`http://localhost:30000/tenants/addnote/${tenantId}`, {
+            await fetch(`https://propertymanager.onrender.com/tenants/addnote/${tenantId}`, {
                 method: 'POST',
                 headers: {
                     'accountId': infoContext.accountId,

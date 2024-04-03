@@ -36,7 +36,7 @@ export default function FileModal({open, setOpen, tenantId}) {
             let formData = new FormData();
             formData.append('tenantId', tenantId);
             formData.append('files', file);
-            let res = await fetch('http://localhost:3000/tenants/upload', {
+            let res = await fetch('https://propertymanager.onrender.com/tenants/upload', {
                 method: 'POST',
                 headers: {
                     accountId: infoContext.accountId,
