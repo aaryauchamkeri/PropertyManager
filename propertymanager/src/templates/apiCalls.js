@@ -1,5 +1,5 @@
 export async function getTemplates(accountId, authToken) {
-    let templates = await fetch('http://localhost:3000/media/templates', {
+    let templates = await fetch('https://propertymanager.onrender.com/media/templates', {
         method: 'GET',
         headers: {
             accountId: accountId,
@@ -14,7 +14,7 @@ export async function uploadTemplate(file, accountId, authToken) {
     try {
         let formData = new FormData();
         formData.append('template', file);
-        let res = await fetch('http://localhost:3000/media/template', {
+        let res = await fetch('https://propertymanager.onrender.com/media/template', {
             method: 'POST',
             headers: {
                 accountId: accountId,

@@ -134,7 +134,7 @@ export default function Templates() {
                                 () => {
                                     let fileExt = template.mime.split('/')[1];
                                     let fileName = template.id + '.' + fileExt;
-                                    window.open(`http://localhost:3000/media/${fileName}`, "_blank")
+                                    window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
                                 }
                             }>
                                 <div>
