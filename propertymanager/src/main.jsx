@@ -43,15 +43,15 @@ const router = createBrowserRouter([
         element: <Properties/>,
         children: [
           {
-            path: '/properties/add',
-            element: <PropertyUpload/>
-          },
-          {
             path: '/properties/:id',
             loader: propertyViewLoader,
             element: <ViewProperty/>
           }
         ]
+      },
+      {
+        path: '/addproperty',
+        element: <PropertyUpload/>
       },
       {
         path: '/tenants',
@@ -76,16 +76,6 @@ const router = createBrowserRouter([
         element: <Login/>,
         path: '/login'
       },
-      // {
-      //   path: '/log',
-      //   element: <Log/>,
-      //   children: [
-      //     {
-      //       path: '/log/invoice',
-      //       element: <Invoice/>
-      //     }
-      //   ]
-      // },
       {
         path: '/account',
         element: <Account/>

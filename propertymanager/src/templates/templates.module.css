@@ -1,14 +1,14 @@
 .main {
     width: 100%;
     min-height: 100%;
-    background-color: rgb(243, 243, 243);
+    background-color: rgb(247, 247, 247);
     overflow-y: scroll;
+    padding: 1em;
 }
 
-.usersContainer {
+.filesContainer {
     width: 100%;
-    display: flex; 
-    flex-wrap: wrap;
+    /* padding: 1em; */
 }
 
 .item {

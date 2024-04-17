@@ -35,7 +35,7 @@ export default function Properties() {
     
     const fetchPropertyData = async () => {
         try {
-            let propertiesResponse = await fetch('https://propertymanager.onrender.com/properties/list', {
+            let propertiesResponse = await fetch('http://localhost:3000/properties/list', {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -75,12 +75,12 @@ export default function Properties() {
     }
 
     function handleAddPropertyClick(e) {
-        navigator('/properties/add');
+        navigator('/addproperty');
     }
 
     async function deleteProperty(propertyId, index) {
         const confirmDelete = window.confirm('Are you sure you want to delete this property? This action cannot be undone!')
-        let res = await fetch(`https://propertymanager.onrender.com/properties/delete/${propertyId}`, {
+        let res = await fetch(`http://localhost:3000/properties/delete/${propertyId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -94,7 +94,7 @@ export default function Properties() {
 
     async function updatePropertyStatus(value, propertyId) {
         try {
-            let res = await fetch(`https://propertymanager.onrender.com/properties/update`, {
+            let res = await fetch(`http://localhost:3000/properties/update`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,

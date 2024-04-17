@@ -24,7 +24,7 @@ const modalStyle = {
 function App() {
   const [signedIn, setSignedIn] = useState(false);
   const [userData, setUserData] = useState({});
-  const [accountId, setAccountId] = useState(0);
+  const [accountId, setAccountId] = useState(1);
   const [selected, setSelected] = useState();
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
@@ -55,7 +55,7 @@ function App() {
                                           userData, setUserData,
                                           accountId, setAccountId
                                         }}>
-              <Outlet/>
+              <Outlet key={accountId}/>
             </CredInfoCtx.Provider>
           </div>
         </div>

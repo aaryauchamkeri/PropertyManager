@@ -11,6 +11,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HistoryIcon from '@mui/icons-material/History';
+import { Button } from '@mui/material';
 
 
 export default function Drawer({selected, setSelected, setOpen, userData, accountId, setAccountId}) {
@@ -22,7 +23,7 @@ export default function Drawer({selected, setSelected, setOpen, userData, accoun
     return (
         <div className={styles.parent}>
             <div className={styles.close}>
-                <div style={{width: '100%'}}>
+                <div style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <select value={accountId} 
                         style={
                             {
@@ -44,6 +45,9 @@ export default function Drawer({selected, setSelected, setOpen, userData, accoun
                             }) : []
                         }
                     </select>
+                    {/* <Button sx={{width: '80%', fontSize: '0.7em', alignSelf: 'center', justifySelf: 'center'}}>
+                        Exit Workspace
+                    </Button> */}
                 </div>
             </div>
             <div className={styles.main}>

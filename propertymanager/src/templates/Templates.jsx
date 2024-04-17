@@ -1,11 +1,27 @@
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import {Box, Typography} from '@mui/material';
+import {Box, Typography, IconButton} from '@mui/material';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import styles from './templates.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { CredInfoCtx } from '../App';
 import { getTemplates, uploadTemplate } from './apiCalls';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MicOutlinedIcon from '@mui/icons-material/MicOutlined';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import ArticleIcon from '@mui/icons-material/Article';
 import { Link } from 'react-router-dom';
+
+
+function getFileType(fileName) {
+    if(fileName.endsWith('mp4') || fileName.endsWith('mov') || fileName.endsWith('avi')) {
+        return <VideocamIcon sx={{color: 'red'}}/>;
+    } else if (fileName.endsWith('mp3') || fileName.endsWith('wav')) {
+        return <MicOutlinedIcon sx={{color: 'blue'}}/>;
+    } else {
+        return <ArticleIcon sx={{color: 'gray'}}/>;
+    }
+}
+
 
 export default function Templates() {
     const infoContext = useContext(CredInfoCtx);
@@ -45,51 +61,96 @@ export default function Templates() {
             onDragOver={(ev) => {
                 allowDrop(ev);
             }}>
-            <div className={styles.userContainer}>
-                {
+            <Typography variant="h5" sx={{
+                marginBottom: '0.5em'
+            }}>My Files</Typography>
+            <div className={styles.filesContainer}>
+                <TableContainer sx={{borderRadius: '1em'}}>
+                    <Table>
+                        <TableHead sx={{backgroundColor: '#f0f0f0'}}>
+                            <TableRow>
+                                <TableCell>
+
+                                </TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                    File Name
+                                </TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                    File Id
+                                </TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                    Actions
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody sx={{backgroundColor: 'white'}}>
+                            {
+                                templates.map(file => {
+                                    return (
+                                        <TableRow>
+                                            <TableCell>
+                                                {getFileType(file.fileName)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.fileName}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.id}
+                                            </TableCell>
+                                            <TableCell>
+                                                <IconButton>
+                                                    <OpenInNewIcon
+                                                        sx={{color: 'blue'}}
+                                                    />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <DeleteIcon
+                                                        sx={{color: 'red'}}
+                                                    />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                {/* {
                     templates.map(template => {
                         return (
-                            <Link onClick={
+                            <div style={{  
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        boxShadow: '2px 2px 2px #e3e3e3',
+                                        padding: '1em 1em 1em 0.5em',
+                                        backgroundColor: 'rgb(230, 230, 230)',
+                                        borderRadius: '0.5em',
+                                        marginBottom: '1em'
+                            }} onClick={
                                 () => {
                                     let fileExt = template.mime.split('/')[1];
                                     let fileName = template.id + '.' + fileExt;
-                                    window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
-                                }}
-                            >
-                                <div className={styles.item}>
-                                    <Box style={{width: '100%',
-                                                height: '100%',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                justifyContent: 'end',
-                                                gap: '25%',
-                                                alignItems: 'center',
-                                                boxShadow: '2px 2px 2px #e3e3e3',
-                                                padding: '0 0 2em 0',
-                                                backgroundColor: 'white'
-                                    }}>
-                                        <InsertDriveFileIcon sx={
-                                            {
-                                                aspectRatio: '1/1',
-                                                fontSize: '4em'
-                                            }
-                                        }/>
-                                        <Typography variant='subtitle2' sx={
-                                            {
-                                                color: 'gray',
-                                                overflow: 'hidden',
-                                                width: '100%',
-                                                textOverflow: 'ellipsis'
-                                            }
-                                        }>
-                                            {template.fileName}
-                                        </Typography>
-                                    </Box>
+                                    window.open(`http://localhost:3000/media/${fileName}`, "_blank")
+                                }
+                            }>
+                                <div>
+                                    <span>
+                                        {template.fileName}
+                                    </span>
                                 </div>
-                            </Link>
+                                <div>
+                                    <IconButton onClick={(e) => {e.preventDefault()}}>
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </div>
+                            </div>
                         )
                     })
-                }
+                } */}
             </div>
         </div>
     )

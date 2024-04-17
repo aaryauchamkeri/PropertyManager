@@ -26,7 +26,7 @@ export default function TaskModal({open, setOpen, tenantId}) {
         console.log(deadline);
         console.log(description);
         try {
-            await fetch(`https://propertymanager.onrender.com/tenants/addtask/${tenantId}`, {
+            await fetch(`http://localhost:3000/tenants/addtask/${tenantId}`, {
                 method: 'POST',
                 headers: {
                     'accountId': infoContext.accountId,

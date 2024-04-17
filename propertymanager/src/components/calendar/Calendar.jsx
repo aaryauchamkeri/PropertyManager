@@ -16,6 +16,7 @@ import CustomEvent from './CustomEvent';
 
 
 const style = {
+  borderRadius: '0.5em',
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -39,7 +40,7 @@ export default function Calendar() {
     useEffect(() => {
         (async () => {
             console.log(infoCtx.accountId);
-            let res = await (await fetch('https://propertymanager.onrender.com/schedule/view', {
+            let res = await (await fetch('http://localhost:3000/schedule/view', {
                 method: "GET",
                 headers: {
                     'accountId': infoCtx.accountId,
@@ -61,7 +62,7 @@ export default function Calendar() {
     }
 
     function addEvent() {
-        fetch('https://propertymanager.onrender.com/schedule/add', {
+        fetch('http://localhost:3000/schedule/add', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ export default function Calendar() {
             <Modal open={modalOpen}>
                 <div style={{...style}}>
                     <div className={styles.header}>
-                        <Typography variant='h5'>
+                        <Typography variant='h5' sx={{color: 'gray'}}>
                             Add Event
                         </Typography>
                         <IconButton onClick={() => setModalOpen(false)}>
@@ -96,7 +97,7 @@ export default function Calendar() {
                     </div>
                     <div className={styles.dateBody}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Typography variant='h6'>*Set Date:</Typography>
+                            <Typography variant='h6'>*Date and Time:</Typography>
                             <div className={styles.dateAndTime}>
                                 <DatePicker value={dayjs(date)}/>
                                 <TimePicker onChange={(e) => {setTimeF(e)}}/>
