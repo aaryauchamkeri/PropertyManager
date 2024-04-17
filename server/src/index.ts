@@ -32,8 +32,3 @@ app.use('/users', userRouter);
 app.use('/activity', activityRouter);
 
 app.listen(3000, '0.0.0.0', () => {});
-
-
-setInterval(() => {
-    console.log('Keep alive message');
-}, 20000)
