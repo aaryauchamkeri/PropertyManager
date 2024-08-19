@@ -9,7 +9,7 @@ export default function Note({userId, note, created}) {
     const [lastName, setLastName] = useState('');
 
     useEffect(() => {
-        fetch(`https://propertymanager.onrender.com/users/user?id=${userId}`, {
+        fetch(`http://localhost:3000/users/user?id=${userId}`, {
             method: "GET",
             headers: {
                 accountId: infoContext.accountId,
@@ -17,7 +17,6 @@ export default function Note({userId, note, created}) {
             }
         }).then(res => {
             res.json().then(jsonData => {
-                console.log(jsonData);
                 setFirstName(jsonData.first_name);
                 setLastName(jsonData.last_name);
             });

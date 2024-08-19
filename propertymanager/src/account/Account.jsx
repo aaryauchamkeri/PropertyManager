@@ -12,7 +12,7 @@ export default function Account() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(function() {
-        fetch('https://propertymanager.onrender.com/users/all', {
+        fetch('http://localhost:3000/users/all', {
             method: 'GET',
             headers: {
                 accountId: infoContext.accountId,
@@ -32,7 +32,7 @@ export default function Account() {
     async function deleteUser(id) {
         let verify = confirm('Are you sure you would like to delete this user?');
         if(verify) {
-            await fetch(`https://propertymanager.onrender.com/users/remove?userId=${id}`, {
+            await fetch(`http://localhost:3000/users/remove?userId=${id}`, {
                 headers: {
                     'Authorization': `Bearer ${infoContext.userData.auth}`,
                     'accountId': infoContext.accountId
@@ -55,9 +55,10 @@ export default function Account() {
                                             justifyContent: 'start',
                                             gap: '0.5em',
                                             alignItems: 'center',
-                                            boxShadow: '2px 2px 2px #e3e3e3',
+                                            boxShadow: '3px 3px 3px 1px #e3e3e3',
                                             padding: '0 0 2em 0',
-                                            backgroundColor: 'white'
+                                            backgroundColor: 'white',
+                                            borderRadius: '1em'
                                             }}>
                                     <IconButton sx={{alignSelf: 'end'}}
                                         disabled = {user.isAdmin || !isAdmin}

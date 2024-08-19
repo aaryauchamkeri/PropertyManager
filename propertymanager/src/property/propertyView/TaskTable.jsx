@@ -7,6 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import CheckIcon from '@mui/icons-material/Check';
 import {Avatar, Tooltip, Skeleton, Button, Modal, Box, IconButton} from '@mui/material';
 import React from 'react';
+import { stringToColor } from '../../utils/stringColor';
 
 export default function TaskTable({tasks, complete}) {
     function getRandomColor() {
@@ -47,7 +48,7 @@ export default function TaskTable({tasks, complete}) {
                                                         + elem.last_name.charAt(0).toUpperCase()
                                                         + elem.last_name.slice(1)}
                                             placement='top'>
-                                            <Avatar sx={{bgcolor: getRandomColor()}}>
+                                            <Avatar sx={{bgcolor: stringToColor(elem.first_name + ' ' + elem.last_name)}}>
                                                 {elem.first_name.toUpperCase().charAt(0)}
                                                 {elem.last_name.toUpperCase().charAt(0)}
                                             </Avatar>

@@ -32,6 +32,7 @@ export default function Templates() {
             let responseTemplates = await getTemplates(infoContext.accountId, infoContext.userData.auth);
             console.log(responseTemplates);
             setTemplates(responseTemplates);
+            // console.log(responseTemplates);
         })()
     }, [])
 
@@ -62,23 +63,27 @@ export default function Templates() {
                 allowDrop(ev);
             }}>
             <Typography variant="h5" sx={{
-                marginBottom: '0.5em'
-            }}>My Files</Typography>
+                marginBottom: '0.5em',
+                color: '#828282'
+            }}>Files</Typography>
             <div className={styles.filesContainer}>
                 <TableContainer sx={{borderRadius: '1em'}}>
                     <Table>
-                        <TableHead sx={{backgroundColor: '#f0f0f0'}}>
+                        <TableHead sx={{}}>
                             <TableRow>
                                 <TableCell>
 
                                 </TableCell>
-                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                <TableCell sx={{}}> 
                                     File Name
                                 </TableCell>
-                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                <TableCell sx={{}}> 
                                     File Id
                                 </TableCell>
-                                <TableCell sx={{fontWeight: 'bold'}}> 
+                                <TableCell sx={{}}> 
+                                    Date Added
+                                </TableCell>
+                                <TableCell sx={{}}> 
                                     Actions
                                 </TableCell>
                             </TableRow>
@@ -97,15 +102,20 @@ export default function Templates() {
                                             <TableCell>
                                                 {file.id}
                                             </TableCell>
+                                            <TableCell sx={{color: '#828282'}}>
+                                                {new Date(file.date_added).toDateString()}
+                                            </TableCell>
                                             <TableCell>
                                                 <IconButton>
                                                     <OpenInNewIcon
                                                         sx={{color: 'blue'}}
+                                                        fontSize='small'
                                                     />
                                                 </IconButton>
                                                 <IconButton>
                                                     <DeleteIcon
                                                         sx={{color: 'red'}}
+                                                        fontSize='small'
                                                     />
                                                 </IconButton>
                                             </TableCell>
@@ -134,7 +144,7 @@ export default function Templates() {
                                 () => {
                                     let fileExt = template.mime.split('/')[1];
                                     let fileName = template.id + '.' + fileExt;
-                                    window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
+                                    window.open(`http://localhost:3000/media/${fileName}`, "_blank")
                                 }
                             }>
                                 <div>

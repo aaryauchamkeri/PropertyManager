@@ -14,7 +14,7 @@ export default function Activity({activity}) {
                     fontWeight: 'bold', alignSelf: 'start',
                     display: 'flex', justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <HistoryIcon sx={{marginRight: '0.5em'}}/> Activity
+                    <HistoryIcon sx={{marginRight: '0.5em'}}/> Recent Activity
                 </Typography>
             </div>
             <div className={styles.content}>

@@ -8,6 +8,7 @@ import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import HistoryIcon from '@mui/icons-material/History';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import Note from "./Note";
 import TaskTable from "./TaskTable";
 import TaskModal from "./TaskModal";
@@ -31,7 +32,7 @@ export default function ViewTenant() {
     const id = useLoaderData();
     const navigator = useNavigate();
     const [tenantData, setTenantData] = useState({});
-    const [pfp, setPfp] = useState(`https://propertymanager.onrender.com/media/profilePicture?tenantId=${id}`);
+    const [pfp, setPfp] = useState(`http://localhost:3000/media/profile-picture?tenantId=${id}`);
     const [taskModalOpen, setTaskModalOpen] = useState(false);
     const [noteModalOpen, setNoteModalOpen] = useState(false);
     const [fileModalOpen, setFileModalOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function ViewTenant() {
     }
 
     useEffect(() => {
-        fetch(`https://propertymanager.onrender.com/tenants/view?tenantId=${id}`, {
+        fetch(`http://localhost:3000/tenants/view?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -58,7 +59,7 @@ export default function ViewTenant() {
             console.log(data);
         })
 
-        fetch(`https://propertymanager.onrender.com/tenants/tasks/${id}`, {
+        fetch(`http://localhost:3000/tenants/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -77,7 +78,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/tenants/notes/${id}`, {
+        fetch(`http://localhost:3000/tenants/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -90,7 +91,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/tenants/files?tenantId=${id}`, {
+        fetch(`http://localhost:3000/tenants/files?tenantId=${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -103,7 +104,7 @@ export default function ViewTenant() {
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/activity/tenant?tenantId=${id}`, {
+        fetch(`http://localhost:3000/activity/tenant?tenantId=${id}`, {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -121,7 +122,7 @@ export default function ViewTenant() {
     const markTaskDone = async (taskId) => {
         if(confirm('Are you sure you would like to mark this task as done?')) {
             try {
-                await fetch(`https://propertymanager.onrender.com/tenants/completeTask?taskId=${taskId}`, {
+                await fetch(`http://localhost:3000/tenants/complete-task?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'accountId': infoContext.accountId,
@@ -155,11 +156,6 @@ export default function ViewTenant() {
                         />
                     </div>
                     <div className={style.statusContainer}>
-                        <Typography variant="h6" fontWeight="bold"
-                                    sx={{color: 'gray', textDecoration: 'underline'}}
-                        > 
-                            Details: 
-                        </Typography>
                     </div>
                     <div style={{marginTop: '1em'}} className={style.sideBarPropertyInfo}>
                         <div className={style.sideBarItem}>
@@ -198,6 +194,15 @@ export default function ViewTenant() {
                             </Typography>
                         </div>
                         <Divider></Divider>
+                        <div className={style.sideBarItem}
+                             style={{display: 'flex', alignItems: 'center', 
+                                     justifyContent: 'center', gap: '0.5em'}}>
+                            <AddCircleOutlinedIcon sx={{color: 'gray'}}/>
+                            <Typography variant="subtitle2" sx={{color: 'gray'}}>
+                                Add Information
+                            </Typography> 
+                        </div>
+                        <Divider></Divider>
                     </div>
                 </div>
                 <div className={style.informationContainer}>
@@ -229,7 +234,7 @@ export default function ViewTenant() {
                                                             () => {
                                                                 let fileExt = file.mime.split('/')[1];
                                                                 let fileName = file.id + '.' + fileExt;
-                                                                window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
+                                                                window.open(`http://localhost:3000/media/${fileName}`, "_blank")
                                                             }}
                                                         >
                                                             <Box sx={{width: '100%', display: 'flex',

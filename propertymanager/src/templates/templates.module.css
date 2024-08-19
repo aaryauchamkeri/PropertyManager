@@ -1,14 +1,12 @@
 .main {
     width: 100%;
     min-height: 100%;
-    background-color: rgb(247, 247, 247);
     overflow-y: scroll;
     padding: 1em;
 }
 
 .filesContainer {
     width: 100%;
-    /* padding: 1em; */
 }
 
 .item {
@@ -21,7 +19,6 @@
 }
 
 .descriptionItem {
-    /* display: inline; */
     display: inline-flex;
     flex-direction: column;
     width: 50%;

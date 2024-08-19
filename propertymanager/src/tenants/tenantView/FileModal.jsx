@@ -1,4 +1,4 @@
-import {Box, Modal, TextField, Button, IconButton, Typography} from '@mui/material';
+import {Box, Modal, Button, IconButton, Typography} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useContext, useState } from 'react';
 import { CredInfoCtx } from '../../App';
@@ -36,7 +36,7 @@ export default function FileModal({open, setOpen, tenantId}) {
             let formData = new FormData();
             formData.append('tenantId', tenantId);
             formData.append('files', file);
-            let res = await fetch('https://propertymanager.onrender.com/tenants/upload', {
+            let res = await fetch('http://localhost:3000/tenants/upload', {
                 method: 'POST',
                 headers: {
                     accountId: infoContext.accountId,

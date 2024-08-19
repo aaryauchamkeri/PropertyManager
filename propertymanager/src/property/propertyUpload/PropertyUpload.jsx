@@ -60,7 +60,7 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
 
     async function sendProperty() {
         try {
-            let res = await fetch('https://propertymanager.onrender.com/properties/add', {
+            let res = await fetch('http://localhost:3000/properties/add', {
                 method: "POST",
                 headers: {
                     'accountId': credCtx.accountId,
@@ -85,7 +85,7 @@ export default function PropertyUpload(/*{name='', address='', pPrice='', mainte
                 form.append('files', image);
             })
 
-            let imageRes = await fetch('https://propertymanager.onrender.com/properties/addFiles', {
+            let imageRes = await fetch('http://localhost:3000/properties/add-files', {
                 method: 'POST',
                 headers: {
                     'accountId': credCtx.accountId,

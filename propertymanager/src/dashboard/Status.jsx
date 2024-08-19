@@ -4,9 +4,6 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { PieChart } from '@mui/x-charts/PieChart';
 
 export default function Status({totalProperties, activeProperties, totalTenants, activeTenants}) {
-
-    console.log(activeProperties);
-    console.log(activeTenants);
     return (
         <div className={styles.status}>
             <Box sx={{
@@ -45,7 +42,7 @@ export default function Status({totalProperties, activeProperties, totalTenants,
                         series={[
                             {
                             data: [
-                                { id: 0, value: totalTenants-activeTenants, label: 'Total Tenants' },
+                                { id: 0, value: totalTenants-activeTenants, label: 'Inactive Tenants' },
                                 { id: 1, value: activeTenants, label: 'Active Tenants' },
                             ],
                             },

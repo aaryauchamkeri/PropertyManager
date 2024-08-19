@@ -9,7 +9,6 @@ import Activity from './Activity';
 
 
 export default function Dashboard() {
-    console.log('hello world');
     const infoContext = useContext(CredInfoCtx);
     const [allEvents, setAllEvents] = useState([]);
     const [tenantTasks, setTenantTasks] = useState([]);
@@ -21,14 +20,13 @@ export default function Dashboard() {
     const [activeTenants, setActiveTenants] = useState(0);
 
     useEffect(() => {
-        fetch('https://propertymanager.onrender.com/schedule/view', {
+        fetch('http://localhost:3000/schedule/view', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
                 'Authorization': `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => res.json()).then((data) => {
-            console.log(data);
             data = data.filter((elem) => {
                 return elem !== undefined && elem !== null && new Date(elem.date).getTime() > new Date().getTime();
             });
@@ -38,11 +36,10 @@ export default function Dashboard() {
                 if(aDate.getTime() > bDate.getTime()) return 1;
                 return -1;
             });
-            console.log(data);
             setAllEvents(data);
         });
 
-        fetch('https://propertymanager.onrender.com/tenants/alltasks', {
+        fetch('http://localhost:3000/tenants/all-tasks', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -62,17 +59,23 @@ export default function Dashboard() {
             setTenantTasks(data);
         });
 
-        fetch('https://propertymanager.onrender.com/activity/all', {
+        fetch('http://localhost:3000/activity/all', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
                 'Authorization': `Bearer ${infoContext.userData.auth}`
             }
         }).then(res => res.json()).then(json => {
+            json.sort((first, second) => {
+                if(new Date(first.created).getTime() < new Date(second.created).getTime()) {
+                    return 1;
+                }
+                return -1;
+            });
             setActivity(json);
         });
 
-        fetch('https://propertymanager.onrender.com/properties/alltasks', {
+        fetch('http://localhost:3000/properties/all-tasks', {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -93,7 +96,7 @@ export default function Dashboard() {
             setPropertyTasks(data);
         });
 
-        fetch('https://propertymanager.onrender.com/properties/list', {
+        fetch('http://localhost:3000/properties/list', {
             method: "GET",
             headers: {
                 'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -109,10 +112,9 @@ export default function Dashboard() {
             });
             setActiveProperties(newActiveProperties);
         }).catch(err => {
-            console.log(err);
         });
 
-        fetch('https://propertymanager.onrender.com/tenants/viewAll', {
+        fetch('http://localhost:3000/tenants/view-all', {
             method: "GET",
             headers: {
                 accountId: infoContext.accountId,

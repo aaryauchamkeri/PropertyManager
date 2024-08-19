@@ -9,6 +9,7 @@ import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import HistoryIcon from '@mui/icons-material/History';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import Note from "./Note";
 import TaskTable from "./TaskTable";
 import TaskModal from "./TaskModal";
@@ -48,7 +49,7 @@ export default function ViewProperty() {
     }
 
     useEffect(() => {
-        fetch(`https://propertymanager.onrender.com/properties/view?propertyId=${id}`, {
+        fetch(`http://localhost:3000/properties/view?propertyId=${id}`, {
                     method: "GET",
                     headers: { 
                         'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -59,14 +60,12 @@ export default function ViewProperty() {
                 setPropertyData(jsonData);
             }).catch(err => {
                 console.log(err);
-                // navigator('/properties');
             });
         }).catch(err => {
             console.log(err);
-            // navigator('/properties');
         });
         
-        fetch(`https://propertymanager.onrender.com/properties/media?propertyId=${id}`, {
+        fetch(`http://localhost:3000/properties/media?propertyId=${id}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${infoContext.userData.auth}`,
@@ -83,14 +82,12 @@ export default function ViewProperty() {
                 setImages(imageLinks);
             }).catch(err => {
                 console.log(err);
-            // navigator('/properties');
             })
         }).catch(err => {
             console.log(err);
-            // navigator('/properties');
         });
 
-        fetch(`https://propertymanager.onrender.com/properties/tasks/${id}`, {
+        fetch(`http://localhost:3000/properties/tasks/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -109,7 +106,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/properties/files?propertyId=${id}`, {
+        fetch(`http://localhost:3000/properties/files?propertyId=${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -117,12 +114,11 @@ export default function ViewProperty() {
             }
         }).then(res => {
             res.json().then(jsonData => {
-                console.log(jsonData);
                 setFiles(jsonData);
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/properties/notes/${id}`, {
+        fetch(`http://localhost:3000/properties/notes/${id}`, {
             method: 'GET', 
             headers: {
                 'Authorization' : `Bearer ${infoContext.userData.auth}`,
@@ -135,7 +131,7 @@ export default function ViewProperty() {
             })
         });
 
-        fetch(`https://propertymanager.onrender.com/activity/property?propertyId=${id}`, {
+        fetch(`http://localhost:3000/activity/property?propertyId=${id}`, {
             method: 'GET',
             headers: {
                 'accountId': infoContext.accountId,
@@ -151,15 +147,17 @@ export default function ViewProperty() {
     }, []);
 
     const markTaskDone = async (taskId) => {
+        console.log('called!')
         if(confirm('Are you sure you would like to mark this task as done?')) {
             try {
-                await fetch(`https://propertymanager.onrender.com/properties/completeTask?taskId=${taskId}`, {
+                await fetch(`http://localhost:3000/properties/complete-task?taskId=${taskId}`, {
                     method: 'GET',
                     headers: {
                         'accountId': infoContext.accountId,
                         'Authorization': `Bearer ${infoContext.userData.auth}`
                     }
                 });
+
             } catch (err) {
     
             }
@@ -179,18 +177,11 @@ export default function ViewProperty() {
                         {propertyData.address}
                     </Typography>
                     <div className = {style.imageContainer}>
-                        <img src = {`https://propertymanager.onrender.com/media/${images[photoNumber]}`}/>
+                        <img src = {`http://localhost:3000/media/${images[photoNumber]}`}/>
                     </div>
                     <Pagination count={images.length} sx={{marginTop: '0.5em'}}
                         onChange={paginationChange}
                     />
-                    <div className={style.statusContainer}>
-                        <Typography variant="h6" fontWeight="bold"
-                                    sx={{color: 'gray', textDecoration: 'underline'}}
-                        > 
-                            Details: 
-                        </Typography>
-                    </div>
                     <div style={{marginTop: '1em'}} className={style.sideBarPropertyInfo}>
                         <div className={style.sideBarItem}>
                             <Typography variant="subtitle2">
@@ -272,6 +263,16 @@ export default function ViewProperty() {
                                 {propertyData['janitor_number']}
                             </Typography>
                         </div>
+                        <Divider></Divider>
+                        <div className={style.sideBarItem}
+                             style={{display: 'flex', alignItems: 'center', 
+                                     justifyContent: 'center', gap: '0.5em'}}>
+                            <AddCircleOutlinedIcon sx={{color: 'gray'}}/>
+                            <Typography variant="subtitle2" sx={{color: 'gray'}}>
+                                Add Information
+                            </Typography> 
+                        </div>
+                        <Divider></Divider>
                     </div>
                 </div>
                 <div className={style.informationContainer}>
@@ -302,7 +303,7 @@ export default function ViewProperty() {
                                                             () => {
                                                                 let fileExt = file.mime.split('/')[1];
                                                                 let fileName = file.id + '.' + fileExt;
-                                                                window.open(`https://propertymanager.onrender.com/media/${fileName}`, "_blank")
+                                                                window.open(`http://localhost:3000/media/${fileName}`, "_blank")
                                                             }}
                                                         >
                                                             <Box sx={{width: '100%', display: 'flex',
