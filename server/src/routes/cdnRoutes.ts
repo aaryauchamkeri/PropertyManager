@@ -17,7 +17,7 @@ const fileUpload = multer({storage: storage});
 
 const router: Router = Router();
 
-router.get('/profilePicture', viewProfileImage);
+router.get('/profile-picture', viewProfileImage);
 router.get('/templates', [authorizeToken, checkAccountAccess], getTemplates);
 router.post('/template', [authorizeToken, checkAccountAccess, fileUpload.single('template')], uploadTemplate);
 router.get('/:name', getFile);

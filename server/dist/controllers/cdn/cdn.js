@@ -29,7 +29,7 @@ let getFile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 let getTemplates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountId = req.accountId;
     try {
-        let files = yield remDbConDynamic('files').select('id', 'fileName', 'mime')
+        let files = yield remDbConDynamic('files').select("*")
             .where({
             accountId: accountId,
             isTemplate: true
@@ -42,6 +42,7 @@ let getTemplates = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 let uploadTemplate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountId = req.accountId;
+    const userId = req.jwtDecoded.id;
     try {
         let templateToAdd = req.file;
         let fileId = randomUUID();
@@ -51,12 +52,15 @@ let uploadTemplate = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             fileName: templateToAdd.originalname,
             mime: templateToAdd.mimetype,
             accountId: accountId,
-            isTemplate: true
+            isTemplate: true,
+            createdBy: userId
         });
         res.json(status);
+        return fileId;
     }
     catch (err) {
         res.status(400).end();
+        return -1;
     }
 });
 let getFileErr = (err, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

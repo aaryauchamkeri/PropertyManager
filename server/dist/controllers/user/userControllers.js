@@ -7,7 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { remDbConDynamic } from "../../database/connection.js";
 import UserService from "../../services/UserService.js";
+import { uploadTemplate } from "../cdn/cdn.js";
 let getUserData = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = String(req.query.id);
@@ -19,6 +21,36 @@ let getUserData = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
     catch (err) {
         res.end(401);
+    }
+});
+let uploadProfilePicture = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let fileId = yield uploadTemplate(request, response);
+        if (fileId != -1) {
+            let res = remDbConDynamic('profile_pictures').insert({
+                id: request.jwtDecoded.id,
+                fileId: fileId
+            });
+            response.status(200).end();
+        }
+        else {
+            response.status(400).end();
+        }
+    }
+    catch (err) {
+        response.status(401).end();
+    }
+});
+let getProfilePicture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userProfilePicutreId = yield remDbConDynamic('profile_pictures')
+            .select('fileId').where({
+            id: req.jwtDecoded.id
+        });
+        res.json({ fileId: userProfilePicutreId });
+    }
+    catch (err) {
+        res.status(400).end();
     }
 });
 let removeUserFromAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,5 +86,5 @@ let getAllAccountUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // next(err);
     }
 });
-export { getUserData, removeUserFromAccount, getAllAccountUsers };
+export { getUserData, uploadProfilePicture, getProfilePicture, removeUserFromAccount, getAllAccountUsers };
 //# sourceMappingURL=userControllers.js.map

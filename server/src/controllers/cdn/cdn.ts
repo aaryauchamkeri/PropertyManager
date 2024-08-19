@@ -23,7 +23,7 @@ let getFile = async (req: Request, res: Response, next) => {
 let getTemplates = async (req: RequestWithIdAdmin, res: Response) => {
     const accountId = req.accountId;
     try {
-        let files = await remDbConDynamic('files').select('id', 'fileName', 'mime')
+        let files = await remDbConDynamic('files').select("*")
             .where({
                 accountId: accountId,
                 isTemplate: true
@@ -36,6 +36,7 @@ let getTemplates = async (req: RequestWithIdAdmin, res: Response) => {
 
 let uploadTemplate = async (req: RequestWithIdAdmin, res: Response) => {
     const accountId = req.accountId;
+    const userId = req.jwtDecoded.id;
     try {
         let templateToAdd = req.file;
         let fileId: string = randomUUID();
@@ -45,11 +46,14 @@ let uploadTemplate = async (req: RequestWithIdAdmin, res: Response) => {
             fileName: templateToAdd.originalname,
             mime: templateToAdd.mimetype,
             accountId: accountId,
-            isTemplate: true
+            isTemplate: true,
+            createdBy: userId
         });
         res.json(status);
+        return fileId;
     } catch (err) {
         res.status(400).end();
+        return -1;
     }
 }
 

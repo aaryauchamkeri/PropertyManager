@@ -24,19 +24,19 @@ const fileUpload = multer({storage: storage});
 router.post('/add', addProperty);
 router.get('/media', viewImages);
 router.get('/files', viewFiles);
-router.get('/completeTask', completeTask);
-router.post('/addFiles', fileUpload.array('files'), addFiles);
+router.get('/complete-task', completeTask);
+router.post('/add-files', fileUpload.array('files'), addFiles);
 router.post('/update', updateProperty);
 router.post('/delete/:propertyId', deleteProperty);
 router.get('/view', viewProperty);
 router.get('/list', getProperties);
 router.get('/tenants', viewTenants);
-router.post('/addnote/:propertyId', addNote);
-router.post('/addtask/:propertyId', addTask);
+router.post('/add-note/:propertyId', addNote);
+router.post('/add-task/:propertyId', addTask);
 router.get('/notes/:propertyId', getNotes);
 router.get('/tasks/:propertyId', getTasks);
-router.get('/allnotes', getAllNotes);
-router.get('/alltasks', getAllTasks);
+router.get('/all-notes', getAllNotes);
+router.get('/all-tasks', getAllTasks);
 
 router.use(propertyErr);
 

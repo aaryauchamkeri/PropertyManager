@@ -1,6 +1,8 @@
+import { remDbConDynamic } from "../../database/connection.js";
 import { RequestWithIdAdmin } from "../../middleware/property/verifyAccess.js";
 import UserService from "../../services/UserService.js";
-import { Response } from "express";
+import { response, Response } from "express";
+import { uploadTemplate } from "../cdn/cdn.js";
 
 
 let getUserData = async (req: RequestWithIdAdmin, res: Response, next) => {
@@ -13,6 +15,36 @@ let getUserData = async (req: RequestWithIdAdmin, res: Response, next) => {
         res.json(userData);
     } catch(err) {
         res.end(401);
+    }
+}
+
+let uploadProfilePicture = async (request: RequestWithIdAdmin, response: Response, next) => {
+    try {
+        let fileId = await uploadTemplate(request, response);
+        if(fileId != -1) {
+            let res = remDbConDynamic('profile_pictures').insert({
+                id: request.jwtDecoded.id,
+                fileId: fileId
+            });
+            response.status(200).end();
+        } else {
+            response.status(400).end();
+        }
+    } catch (err) {
+        response.status(401).end();
+    }
+}
+
+let getProfilePicture = async (req: RequestWithIdAdmin, res: Response, next) => {
+    try {
+        let userProfilePicutreId = await remDbConDynamic('profile_pictures')
+                                        .select('fileId').where({
+            id: req.jwtDecoded.id
+        });
+
+        res.json({fileId: userProfilePicutreId});
+    } catch (err) {
+        res.status(400).end();
     }
 }
 
@@ -48,4 +80,5 @@ let getAllAccountUsers = async (req: RequestWithIdAdmin, res: Response, next) =>
     }
 }
 
-export {getUserData, removeUserFromAccount, getAllAccountUsers};
+export {getUserData, uploadProfilePicture, getProfilePicture,
+        removeUserFromAccount, getAllAccountUsers};
