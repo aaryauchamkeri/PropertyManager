@@ -5,14 +5,14 @@ import mysql, { Connection, MysqlError } from 'mysql';
 //     host: 'portfoliopms.cnmwkmu0qksp.us-east-2.rds.amazonaws.com',
 //     port: 3306,
 //     user: 'pillok',
-//     password: '3billionmrr',
+//     password: '__________',
 //     database: 'RealEstateManagement'
 // });
 
 var con: Connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'GSW30kdcurry',
+    password: '___________',
     database: 'RealEstateManagement'
 });
 
@@ -22,7 +22,7 @@ var con: Connection = mysql.createConnection({
 //         host: 'portfoliopms.cnmwkmu0qksp.us-east-2.rds.amazonaws.com',
 //         port: 3306,
 //         user: 'pillok',
-//         password: '3billionmrr',
+//         password: '________',
 //         database: 'RealEstateManagement'
 //     }
 // });
@@ -33,7 +33,7 @@ var knexCon = knex({
         host: 'localhost',
         port: 3306,
         user: 'root',
-        password: 'GSW30kdcurry',
+        password: '_________',
         database: 'RealEstateManagement'
     }
 });
